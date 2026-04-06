@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cẩm Nang Kỹ Năng Làm Việc & Học Tập</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+    --hcmus-blue: #004c8c;
+    --geo-orange: #d97706; 
+}
+.header-gradient { background: linear-gradient(to right, #ffffff, #e6f0fa); }
+.text-hcmus { color: var(--hcmus-blue); }
+.bg-hcmus { background-color: var(--hcmus-blue); }
+.border-hcmus { border-color: var(--hcmus-blue); }
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 350px;
+    max-height: 400px;
+}
+@media (min-width: 768px) {
+    .chart-container {
+        height: 400px;
+    }
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.hide-scroll::-webkit-scrollbar { display: none; }
+.hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+.glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+.nav-link.active { color: var(--hcmus-blue); border-bottom: 2px solid var(--hcmus-blue); font-weight: 600; }
+.eisenhower-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; }
+.hat-btn { transition: transform 0.2s, box-shadow 0.2s; }
+.hat-btn:hover { transform: scale(1.05); }
+.hat-btn.active { transform: scale(1.1); box-shadow: 0 0 0 4px rgba(0, 76, 140, 0.3); }
+
+/* Tùy chỉnh thanh cuộn cho Modal chi tiết */
+#modal-content::-webkit-scrollbar { width: 6px; }
+#modal-content::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+#modal-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+#modal-content::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-200 selection:text-blue-900">
+
+<!-- Header Section -->
+<header class="header-gradient shadow-md border-b-4 border-hcmus">
+
+</header>
+
+<!-- Creator Info Bar -->
+<div class="bg-white border-b shadow-sm relative z-40">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex flex-col md:flex-row justify-between items-center text-xs md:text-sm text-gray-600">
+        <div><span class="font-bold text-hcmus">GV Phụ trách: ThS. Đinh Thị Kim Liên </span></div>
+        <div class="flex gap-4"><span><i class="fas fa-envelope mr-1"></i>dtklien@hcmus.edu.vn</span><span><i class="fas fa-phone-alt mr-1"></i>xxxxxxx</span></div>
+    </div>
+</div>
+
+<!-- Sticky Navigation -->
+<nav class="sticky top-0 z-50 glass-nav border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center text-hcmus font-black text-xl tracking-tighter">
+                <i class="fas fa-book-open mr-2"></i> SKILL360
+            </div>
+            <div class="hidden md:flex space-x-6 overflow-x-auto hide-scroll">
+                <a href="#tong-quan" class="nav-link text-slate-600 py-4 px-2 text-sm font-medium transition-colors hover:text-blue-800">Tổng Quan</a>
+                <a href="#hoc-tap" class="nav-link text-slate-600 py-4 px-2 text-sm font-medium transition-colors hover:text-blue-800">Học Tập</a>
+                <a href="#thoi-gian" class="nav-link text-slate-600 py-4 px-2 text-sm font-medium transition-colors hover:text-blue-800">Thời Gian</a>
+                <a href="#tu-duy" class="nav-link text-slate-600 py-4 px-2 text-sm font-medium transition-colors hover:text-blue-800">Tư Duy</a>
+                <a href="#thong-tin" class="nav-link text-slate-600 py-4 px-2 text-sm font-medium transition-colors hover:text-blue-800">Thông Tin</a>
+                <a href="#toan-dien" class="nav-link text-slate-600 py-4 px-2 text-sm font-medium transition-colors hover:text-blue-800">Toàn Diện</a>
+                <a href="#tham-khao" class="nav-link text-slate-600 py-4 px-2 text-sm font-medium transition-colors hover:text-blue-800 whitespace-nowrap">Tham Khảo</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-28">
+
+    <section id="tong-quan" class="pt-8 text-center scroll-mt-24">
+        <div class="inline-block bg-blue-100 text-hcmus font-bold px-4 py-1 rounded-full mb-6 text-sm tracking-wide">
+            CẨM NANG PHƯƠNG PHÁP ỨNG DỤNG
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6 leading-tight">
+            Nâng Tầm Kỹ Năng <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-teal-500">Học Tập & Làm Việc</span>
+        </h1>
+        <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600 leading-relaxed">
+            Khám phá không gian tương tác tổng hợp các phương pháp khoa học đã được kiểm chứng. Từ quản lý thời gian, tư duy phản biện đến tài chính cá nhân – hệ thống này giúp bạn xây dựng nền tảng tư duy tự học suốt đời và tối ưu hóa hiệu suất.
+        </p>
+    </section>
+
+    <section id="hoc-tap" class="scroll-mt-24">
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                <span class="text-3xl">&#x1F9E0;</span> Học Tập & Ghi Nhớ
+            </h2>
+            <p class="mt-4 text-slate-600 text-lg max-w-3xl">
+                Phần này minh họa sức mạnh của việc học chủ động. Thay vì đọc thụ động, các kỹ thuật như truy xuất chủ động (Active Recall) và lặp lại ngắt quãng (Spaced Repetition) tác động trực tiếp vào cơ chế lưu trữ của não bộ.
+            </p>
+            <button class="read-more-btn mt-6 w-max inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-hcmus bg-blue-50 border border-blue-100 rounded-xl hover:bg-hcmus hover:text-white transition-all duration-200 shadow-sm" data-section="hoc-tap">
+                <i class="fas fa-book-reader text-lg"></i> Tham khảo chi tiết văn bản gốc
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Đường Cong Quên Lãng (Ebbinghaus)</h3>
+                <p class="text-sm text-slate-500 mb-6">Tương tác để xem cách lặp lại ngắt quãng đánh bại sự lãng quên tự nhiên.</p>
+                
+                <div class="flex justify-center gap-4 mb-6">
+                    <button id="btn-no-review" class="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-semibold hover:bg-slate-200 transition">Không Ôn Tập</button>
+                    <button id="btn-spaced" class="px-5 py-2.5 bg-hcmus text-white rounded-xl font-semibold shadow-md shadow-blue-200 hover:bg-blue-900 transition">Lặp Lại Ngắt Quãng</button>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="forgettingChart"></canvas>
+                </div>
+                
+                <div id="forgetting-insight" class="mt-6 text-center text-sm font-medium text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    Chỉ sau vài ngày, kiến thức rớt xuống dưới 20% nếu không được củng cố.
+                </div>
+            </div>
+
+            <div class="space-y-6 flex flex-col justify-center">
+                <div class="bg-gradient-to-br from-blue-50 to-white p-6 rounded-2xl border border-blue-100">
+                    <h4 class="font-bold text-lg text-hcmus mb-3 flex items-center gap-2">
+                        <i class="fas fa-search-plus"></i> Chiến Lược Đọc
+                    </h4>
+                    <ul class="space-y-2 text-slate-700 text-sm">
+                        <li><strong class="text-hcmus">Skimming & Scanning:</strong> Đọc lướt quét tiêu đề và tìm dữ liệu cụ thể nhanh chóng.</li>
+                        <li><strong class="text-hcmus">Intensive & Critical:</strong> Đọc chuyên sâu và phản biện, đánh giá tính logic của tác giả.</li>
+                        <li><strong class="text-hcmus">SQ3R:</strong> Khảo sát (Survey), Hỏi (Question), Đọc (Read), Ghi nhớ (Recite), Ôn tập (Review).</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-teal-50 to-white p-6 rounded-2xl border border-teal-100">
+                    <h4 class="font-bold text-lg text-teal-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-edit"></i> Ghi Chép & Truy Xuất
+                    </h4>
+                    <ul class="space-y-2 text-slate-700 text-sm">
+                        <li><strong class="text-teal-700">Cornell:</strong> Chia giấy 3 phần: Từ khóa, Ghi chép chính, Tóm tắt.</li>
+                        <li><strong class="text-teal-700">Active Recall & Blurting:</strong> Tự kiểm tra, ép não bộ trích xuất thông tin ra giấy mà không nhìn tài liệu.</li>
+                        <li><strong class="text-teal-700">Feynman:</strong> Khắc sâu bằng cách đơn giản hóa và giảng lại cho người khác.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="thoi-gian" class="scroll-mt-24">
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                <span class="text-3xl">&#x23F3;</span> Quản Lý Thời Gian
+            </h2>
+            <p class="mt-4 text-slate-600 text-lg max-w-3xl">
+                Không phải làm nhiều hơn, mà là làm đúng việc. Phần này giới thiệu các công cụ phân bổ nguồn lực. Tương tác với Ma trận Eisenhower dưới đây để hiểu cách sắp xếp ưu tiên dựa trên mức độ khẩn cấp và quan trọng.
+            </p>
+            <button class="read-more-btn mt-6 w-max inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-hcmus bg-blue-50 border border-blue-100 rounded-xl hover:bg-hcmus hover:text-white transition-all duration-200 shadow-sm" data-section="thoi-gian">
+                <i class="fas fa-book-reader text-lg"></i> Tham khảo chi tiết văn bản gốc
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-7 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800 text-center mb-1">Ma Trận Eisenhower</h3>
+                <p class="text-center text-sm text-slate-500 mb-6">Di chuột vào các ô để xem nguyên tắc xử lý.</p>
+                
+                <div class="eisenhower-grid h-[320px]">
+                    <div class="group relative bg-red-50 border border-red-100 rounded-tl-2xl flex flex-col items-center justify-center p-4 cursor-crosshair overflow-hidden transition-all hover:bg-red-600">
+                        <div class="text-red-800 font-bold text-center group-hover:opacity-0 transition-opacity">Khẩn Cấp &<br>Quan Trọng</div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="font-black text-2xl tracking-wider mb-1">LÀM NGAY</span>
+                            <span class="text-xs text-center text-red-100">Xử lý khủng hoảng, dự án sát deadline.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="group relative bg-blue-50 border border-blue-100 rounded-tr-2xl flex flex-col items-center justify-center p-4 cursor-crosshair overflow-hidden transition-all hover:bg-hcmus">
+                        <div class="text-hcmus font-bold text-center group-hover:opacity-0 transition-opacity">Không Khẩn &<br>Quan Trọng</div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="font-black text-2xl tracking-wider mb-1">LÊN KẾ HOẠCH</span>
+                            <span class="text-xs text-center text-blue-100">Học tập, chiến lược dài hạn, thể thao.<br>(Tập trung Quy luật 80/20 ở đây)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="group relative bg-amber-50 border border-amber-100 rounded-bl-2xl flex flex-col items-center justify-center p-4 cursor-crosshair overflow-hidden transition-all hover:bg-amber-500">
+                        <div class="text-amber-800 font-bold text-center group-hover:opacity-0 transition-opacity">Khẩn Cấp &<br>Không Quan Trọng</div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="font-black text-2xl tracking-wider mb-1">ỦY THÁC</span>
+                            <span class="text-xs text-center text-amber-50">Cuộc gọi làm phiền, việc vặt của người khác.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="group relative bg-slate-100 border border-slate-200 rounded-br-2xl flex flex-col items-center justify-center p-4 cursor-crosshair overflow-hidden transition-all hover:bg-slate-700">
+                        <div class="text-slate-700 font-bold text-center group-hover:opacity-0 transition-opacity">Không Khẩn &<br>Không Quan Trọng</div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="font-black text-2xl tracking-wider mb-1">LOẠI BỎ</span>
+                            <span class="text-xs text-center text-slate-300">Mạng xã hội vô bổ, lướt web vô định.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 space-y-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex gap-4 items-start">
+                    <div class="text-3xl text-hcmus"><i class="fas fa-bullseye"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">Mục Tiêu SMART & GROW</h4>
+                        <p class="text-slate-600 text-sm mt-1">Thiết lập mục tiêu Cụ thể, Đo lường được, Khả thi, Thực tế, Có thời hạn. Áp dụng GROW để vạch kế hoạch thực thi.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex gap-4 items-start">
+                    <div class="text-3xl text-red-500"><i class="fas fa-stopwatch"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">Pomodoro & Time Blocking</h4>
+                        <p class="text-slate-600 text-sm mt-1">Phân khu thời gian cho 1 nhiệm vụ duy nhất. Làm việc tập trung 25 phút, nghỉ 5 phút để bảo vệ năng lượng não bộ.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex gap-4 items-start">
+                    <div class="text-3xl text-amber-500"><i class="fas fa-bolt"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">Quy Luật 80/20 & Parkinson</h4>
+                        <p class="text-slate-600 text-sm mt-1">20% nỗ lực cốt lõi mang lại 80% kết quả. Giới hạn thời gian chặt chẽ vì "công việc luôn giãn nở lấp đầy thời gian".</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tu-duy" class="scroll-mt-24">
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                <span class="text-3xl">&#x1F4A1;</span> Tư Duy Phản Biện
+            </h2>
+            <p class="mt-4 text-slate-600 text-lg max-w-3xl">
+                Cung cấp các lăng kính đa chiều để phá vỡ bế tắc. Khám phá phương pháp Sáu Chiếc Mũ Tư Duy của De Bono để phân tách cảm xúc, logic, và sự sáng tạo khi đối mặt với một vấn đề phức tạp.
+            </p>
+            <button class="read-more-btn mt-6 w-max inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-hcmus bg-blue-50 border border-blue-100 rounded-xl hover:bg-hcmus hover:text-white transition-all duration-200 shadow-sm" data-section="tu-duy">
+                <i class="fas fa-book-reader text-lg"></i> Tham khảo chi tiết văn bản gốc
+            </button>
+        </div>
+
+        <div class="bg-slate-900 rounded-3xl p-8 shadow-xl text-white border-t-4 border-hcmus">
+            <h3 class="text-2xl font-bold text-center mb-2">Sáu Chiếc Mũ Tư Duy (Six Thinking Hats)</h3>
+            <p class="text-slate-400 text-center text-sm mb-8">Nhấp vào từng chiếc mũ để thay đổi lăng kính phân tích vấn đề.</p>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button class="hat-btn w-14 h-14 rounded-full bg-white text-slate-900 flex items-center justify-center text-xl font-black border-2 border-slate-300" data-hat="white">&#x1F3A9;</button>
+                <button class="hat-btn w-14 h-14 rounded-full bg-red-500 text-white flex items-center justify-center text-xl font-black border-2 border-red-400" data-hat="red">&#x1F3A9;</button>
+                <button class="hat-btn w-14 h-14 rounded-full bg-black text-white flex items-center justify-center text-xl font-black border-2 border-slate-700 shadow-[0_0_10px_rgba(255,255,255,0.2)]" data-hat="black">&#x1F3A9;</button>
+                <button class="hat-btn w-14 h-14 rounded-full bg-yellow-400 text-slate-900 flex items-center justify-center text-xl font-black border-2 border-yellow-300" data-hat="yellow">&#x1F3A9;</button>
+                <button class="hat-btn w-14 h-14 rounded-full bg-green-500 text-white flex items-center justify-center text-xl font-black border-2 border-green-400" data-hat="green">&#x1F3A9;</button>
+                <button class="hat-btn w-14 h-14 rounded-full bg-blue-500 text-white flex items-center justify-center text-xl font-black border-2 border-blue-400" data-hat="blue">&#x1F3A9;</button>
+            </div>
+
+            <div id="hat-display" class="bg-slate-800 rounded-2xl p-6 md:p-8 min-h-[180px] flex flex-col justify-center items-center text-center transition-all duration-300 border border-slate-700">
+                <h4 id="hat-title" class="text-2xl font-bold mb-3 text-slate-200">Chọn một chiếc mũ</h4>
+                <p id="hat-desc" class="text-slate-400 text-lg">Để khám phá góc nhìn tương ứng trong làm việc nhóm và ra quyết định.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h4 class="font-bold text-hcmus mb-3 text-lg"><i class="fas fa-lightbulb mr-2 text-yellow-500"></i>Sáng Tạo Ý Tưởng</h4>
+                <p class="text-slate-600 text-sm mb-3"><strong>SCAMPER:</strong> Thay thế, Kết hợp, Thích nghi, Điều chỉnh, Dùng việc khác, Loại bỏ, Đảo ngược.</p>
+                <p class="text-slate-600 text-sm"><strong>Brainstorming & Tư Duy Ngược:</strong> Tập kích não không phán xét, hoặc lật ngược vấn đề để tìm cách phòng tránh.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h4 class="font-bold text-hcmus mb-3 text-lg"><i class="fas fa-microscope mr-2 text-teal-600"></i>Phân Tích Cội Nguồn</h4>
+                <p class="text-slate-600 text-sm mb-3"><strong>Truy Vấn Socratic:</strong> Liên tục đặt hệ thống câu hỏi để bóc tách bản chất sự việc.</p>
+                <p class="text-slate-600 text-sm"><strong>5W1H & Biểu Đồ Xương Cá:</strong> Phân tích toàn diện (What, Where, When, Why, Who, How) và tìm nguyên nhân gốc rễ.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h4 class="font-bold text-hcmus mb-3 text-lg"><i class="fas fa-chess-knight mr-2 text-indigo-500"></i>Ra Quyết Định</h4>
+                <p class="text-slate-600 text-sm mb-3"><strong>Vòng Lặp OODA (Áp lực cao):</strong> Quan sát, Định hướng, Quyết định, Hành động.</p>
+                <p class="text-slate-600 text-sm"><strong>Mô hình Bậc Thang Suy Luận:</strong> Minh họa logic đi từ quan sát dữ liệu đến hành động.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="thong-tin" class="scroll-mt-24">
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                <span class="text-3xl">&#x1F50D;</span> Xử Lý Thông Tin Số
+            </h2>
+            <p class="mt-4 text-slate-600 text-lg max-w-3xl">
+                Trong kỷ nguyên AI và bùng nổ tin giả, kỹ năng thẩm định là sống còn. Ứng dụng hai quy trình chuẩn mực dưới đây để lọc nhiễu và tinh chỉnh dữ liệu.
+            </p>
+            <button class="read-more-btn mt-6 w-max inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-hcmus bg-blue-50 border border-blue-100 rounded-xl hover:bg-hcmus hover:text-white transition-all duration-200 shadow-sm" data-section="thong-tin">
+                <i class="fas fa-book-reader text-lg"></i> Tham khảo chi tiết văn bản gốc
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-800 p-5 text-center border-t-4 border-hcmus">
+                    <h3 class="text-xl font-bold text-white tracking-widest">C.R.A.A.P</h3>
+                    <p class="text-slate-300 text-xs mt-1">Đánh Giá Tài Liệu Học Thuật</p>
+                </div>
+                <div class="p-6">
+                    <ul class="space-y-4 text-sm text-slate-700">
+                        <li class="flex gap-3"><span class="font-bold text-hcmus w-24">Currency</span>Tính cập nhật của thông tin.</li>
+                        <li class="flex gap-3"><span class="font-bold text-hcmus w-24">Relevance</span>Mức độ liên quan chủ đề.</li>
+                        <li class="flex gap-3"><span class="font-bold text-hcmus w-24">Authority</span>Thẩm quyền, uy tín tác giả.</li>
+                        <li class="flex gap-3"><span class="font-bold text-hcmus w-24">Accuracy</span>Độ chính xác, bằng chứng.</li>
+                        <li class="flex gap-3"><span class="font-bold text-hcmus w-24">Purpose</span>Mục đích công bố (thiên kiến?).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-teal-600 p-5 text-center border-t-4 border-teal-800">
+                    <h3 class="text-xl font-bold text-white tracking-widest">S.I.F.T</h3>
+                    <p class="text-teal-100 text-xs mt-1">Chống Tin Giả Mạng Xã Hội</p>
+                </div>
+                <div class="p-6">
+                    <ul class="space-y-4 text-sm text-slate-700">
+                        <li class="flex gap-3"><span class="font-bold text-teal-700 w-24">Stop</span>Kiểm soát cảm xúc, dừng lại.</li>
+                        <li class="flex gap-3"><span class="font-bold text-teal-700 w-24">Investigate</span>Kiểm tra nguồn tin là ai.</li>
+                        <li class="flex gap-3"><span class="font-bold text-teal-700 w-24">Find</span>Tìm nguồn uy tín để đối chiếu.</li>
+                        <li class="flex gap-3"><span class="font-bold text-teal-700 w-24">Trace</span>Truy vết ngữ cảnh gốc hình ảnh.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-blue-50 border border-blue-100 rounded-2xl p-6 text-center max-w-4xl mx-auto">
+            <h4 class="font-bold text-hcmus mb-2"><i class="fas fa-robot mr-2"></i>Tương Tác AI & Google Dorks</h4>
+            <p class="text-slate-700 text-sm">
+                Khi dùng ChatGPT, áp dụng <strong>Quy tắc 3T</strong>: Tìm kiếm (Prompt) - Tách lỗi (Lọc thiên kiến AI) - Tinh chỉnh. Để tra cứu chuyên sâu, dùng Toán tử Boolean (AND, OR) và cú pháp <code>site:</code>, <code>filetype:pdf</code> trên Google.
+            </p>
+        </div>
+    </section>
+
+    <section id="toan-dien" class="scroll-mt-24">
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                <span class="text-3xl">&#x1F331;</span> Tài Chính, Sức Khỏe & Đội Nhóm
+            </h2>
+            <p class="mt-4 text-slate-600 text-lg max-w-3xl">
+                Hiệu suất làm việc phải song hành với sự cân bằng bền vững. Quản lý tài chính cá nhân tự động hóa sự thịnh vượng, trong khi chăm sóc thể chất và khung làm việc nhóm duy trì năng lượng dài hạn.
+            </p>
+            <button class="read-more-btn mt-6 w-max inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-hcmus bg-blue-50 border border-blue-100 rounded-xl hover:bg-hcmus hover:text-white transition-all duration-200 shadow-sm" data-section="toan-dien">
+                <i class="fas fa-book-reader text-lg"></i> Tham khảo chi tiết văn bản gốc
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800 text-center mb-1">Hệ Thống 6 Chiếc Lọ (JARS)</h3>
+                <p class="text-center text-sm text-slate-500 mb-6">Tương tác với biểu đồ để xem phân bổ tài chính của T. Harv Eker.</p>
+                
+                <div class="chart-container">
+                    <canvas id="jarsChart"></canvas>
+                </div>
+                
+                <p class="mt-6 text-xs text-center text-slate-500">
+                    Các phương pháp khác: Quy tắc 50/30/20, sổ tay Kakeibo (Nhật Bản), và Pay Yourself First (Trả cho bản thân trước).
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-1.5 h-full bg-teal-500 rounded-l-2xl"></div>
+                    <h4 class="font-bold text-lg text-slate-800 mb-3 pl-2"><i class="fas fa-heartbeat text-teal-500 mr-2"></i>Sức Khỏe Thể Chất & Tinh Thần</h4>
+                    <ul class="text-sm text-slate-600 space-y-3 pl-2">
+                        <li><strong>Chạy bộ 80/20:</strong> 80% nhẹ nhàng, 20% cường độ cao để xây sức bền mà không kiệt sức.</li>
+                        <li><strong>Thở 4 thì (GS. Nguyễn Khắc Viện):</strong> Hít vào, giữ hơi, thở ra, giữ hơi -> Điều hòa thần kinh, giảm căng thẳng.</li>
+                        <li><strong>Ngủ đa pha & Giãn cơ:</strong> Chia nhỏ giấc ngủ để tái tạo năng lượng; giãn cơ liên tục cho dân văn phòng.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-1.5 h-full bg-hcmus rounded-l-2xl"></div>
+                    <h4 class="font-bold text-lg text-slate-800 mb-3 pl-2"><i class="fas fa-users text-hcmus mr-2"></i>Kỹ Năng Đội Nhóm & Thuyết Trình</h4>
+                    <ul class="text-sm text-slate-600 space-y-3 pl-2">
+                        <li><strong>Quy trình TRAC (Xử lý Q&A):</strong> Thank (Cảm ơn) -> Repeat (Lặp lại) -> Answer (Trả lời trọng tâm) -> Control (Kiểm soát thời lượng).</li>
+                        <li><strong>Khung Logic (Logical Framework):</strong> Ma trận 4x4 (Mục đích, Mục tiêu, Kết quả, Hoạt động vs Nội dung, Chỉ báo, Chứng minh, Rủi ro) giúp quản trị dự án minh bạch.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tham-khao" class="scroll-mt-24 pt-8 border-t border-slate-200">
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                <span class="text-3xl">&#x1F4DA;</span> Tài Liệu Tham Khảo
+            </h2>
+            <p class="mt-4 text-slate-600 text-lg max-w-3xl">
+                Danh sách 44 tài liệu nghiên cứu, bài báo và sách chuyên ngành đã được tổng hợp, lọc trùng và chuẩn hóa theo chuẩn APA để xây dựng hệ thống phương pháp trong cẩm nang này.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 h-[500px] overflow-y-auto">
+            <ol class="list-decimal pl-5 space-y-3 text-sm text-slate-700 marker:text-hcmus marker:font-bold">
+                <li>BBC. (2024, August 5). Kakeibo: The Japanese art of saving money [Video]. BBC Reel.</li>
+                <li>Blakeslee, S. (2004). The CRAAP Test. California State University, Chico, CA, USA. 21.</li>
+                <li>Buzan, T. (n.d.). The ultimate book of mind map. HarperCollins Publishers.</li>
+                <li>Chiba, F. (2017). Kakeibo: The Japanese art of saving money. Tuttle Publishing.</li>
+                <li>Cirillo, F. (2018). The Pomodoro technique: The acclaimed time-management system that has transformed how we work. Currency.</li>
+                <li>Clason, G. S. (2002). The richest man in Babylon. (Original work published 1926).</li>
+                <li>Cottrell, S. (2019). The Study Skills Handbook (5th ed.). Macmillan International Higher Education.</li>
+                <li>Covey, S. R. (1989). The 7 habits of highly effective people: Powerful lessons in personal change. Simon & Schuster.</li>
+                <li>De Bono, E. (1985). Six thinking hats. Little, Brown and Company.</li>
+                <li>Dixon, C. (2022). Google dorking: How to find hidden information. DorkSearch.</li>
+                <li>Doran, G. T. (1981). There's a S.M.A.R.T. way to write management's goals and objectives. Management Review, 70 (11), 35-36.</li>
+                <li>Eker, T. H. (n.d.). Secret of Millionaire Mind (Bí mật tư duy triệu phú).</li>
+                <li>Ellis, D. (2022). Becoming a master student: Making the career connection. Cengage Learning.</li>
+                <li>Federal Deposit Insurance Corporation (FDIC). (n.d.). Pay Yourself First Instructor Guide: FDIC Money Smart - Financial Education Curriculum. FDIC Money Smart.</li>
+                <li>Giáo trình Những kỹ năng mềm cơ bản. (n.d.). (Tài liệu lưu hành nội bộ).</li>
+                <li>Graham, J. (2020). Time blocking + Pomodoro: The ultimate productivity technique? Medium.</li>
+                <li>Harrington, C. (2022). Student success in college: Doing what works! (4th ed.). Cengage Learning.</li>
+                <li>Hu, Z., & Ge, Y. (2026). Socratic questioning to improve effective debriefing in health sciences: Students’ voice. Journal of Education and Health Promotion, 15 (1), 39.</li>
+                <li>iRace.vn. (n.d.). Phương pháp chạy bộ 80/20.</li>
+                <li>Koch, R. (1998). The 80/20 principle: The secret to achieving more with less. Currency.</li>
+                <li>Linh Lê. (2022, December 20). Học cách tiết kiệm bằng phương pháp Kakeibo. Trường Đại học Bách khoa - Văn phòng Đào tạo Quốc tế.</li>
+                <li>Markova, D. (1992). How your child is smart: A life-changing approach to learning. Conari Press.</li>
+                <li>Michalko, M. (2006). Đột phá sức sáng tạo - Bí mật của những thiên tài sáng tạo. NXB Tri thức.</li>
+                <li>Nguyễn, K. V. (1985). Phương pháp thở và sức khỏe. Nhà xuất bản Y học.</li>
+                <li>Parkinson, C. N. (1955, November 19). Parkinson's law. The Economist.</li>
+                <li>Pauk, W., & Owens, R. J. Q. (2014). How to Study in College (11th ed.). Cengage Learning.</li>
+                <li>Phước, N. T. P. N. T. (2023). Sử dụng chat GPT làm công cụ hỗ trợ trong việc dạy và học ngành truyền thông. Tạp chí Khoa học Trường Đại học Quốc tế Hồng Bàng, 25, 95–100.</li>
+                <li>Postawski, K. M. (2006). Làm cách nào để ngủ ít hơn mà vẫn làm việc nhiều hơn.</li>
+                <li>Rampton, J. (2019). Time blocking tips top experts and scientists use to increase productivity. Inc.</li>
+                <li>Roediger, H. L., & Butler, A. C. (2011). The critical role of retrieval practice in long-term retention. Trends in Cognitive Sciences, 15 (1), 20-27.</li>
+                <li>Stampi, C. (1992). Why we nap: Evolution, chronobiology, and functions of polyphasic and ultrashort sleep. Birkhäuser.</li>
+                <li>Tabibian, B., Upadhyay, U., De, A., Zarezade, A., Schölkopf, B., & Gomez-Rodriguez, M. (2019). Enhancing human learning via spaced repetition optimization. Proceedings of the National Academy of Sciences, 116 (10), 3988-3993.</li>
+                <li>The Decision Lab. (n.d.). The OODA loop.</li>
+                <li>Trường Đại học Tài chính – Marketing. (n.d.). Bài giảng Kỹ năng thuyết trình và làm việc nhóm. Bộ môn Kỹ năng mềm - Viện Nghiên cứu Kinh tế Ứng dụng.</li>
+                <li>University of Chicago Library. (n.d.). Evaluating Resources and Misinformation: SIFT Method.</li>
+                <li>Viện Doanh trí Văn Hiến. (n.d.). Kỹ năng giải quyết vấn đề và ra quyết định (Tài liệu lưu hành nội bộ). Trường Đại học Văn Hiến.</li>
+                <li>Viện Doanh trí Văn Hiến. (n.d.). Kỹ năng học tập bậc đại học (Tài liệu lưu hành nội bộ). Trường Đại học Văn Hiến.</li>
+                <li>Viện Doanh trí Văn Hiến. (n.d.-a). Kỹ năng tư duy sáng tạo và phản biện (Tài liệu lưu hành nội bộ). Trường Đại học Văn Hiến.</li>
+                <li>Viện Doanh trí Văn Hiến. (n.d.-b). Kỹ năng giải quyết vấn đề (Tài liệu lưu hành nội bộ). Trường Đại học Văn Hiến.</li>
+                <li>Vũ, T. (2020, April 22). Phương pháp truy vấn Socrates của các THIÊN TÀI. Tim Vũ.</li>
+                <li>Warren, E., & Tyagi, A. W. (2005). All your worth: The ultimate lifetime money plan. Simon & Schuster.</li>
+                <li>Watanabe, K. (2009). Problem solving 101: A simple book for smart people (Người thông minh giải quyết vấn đề như thế nào?). Nhà xuất bản Trẻ.</li>
+                <li>Whitmore, J. (1992). Coaching for performance: GROWing human potential and purpose. Nicholas Brealey Publishing.</li>
+                <li>Yates, F. (2000). The art of memory. London: Pimlico.</li>
+            </ol>
+        </div>
+    </section>
+
+</main>
+
+<!-- Modal Container for Details -->
+<div id="detail-modal" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+    <div class="modal-box bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col transform scale-95 transition-transform duration-300">
+        <div class="p-5 md:p-6 border-b border-slate-100 flex justify-between items-center bg-white rounded-t-3xl">
+            <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-hcmus">Chi tiết phương pháp</h3>
+            <button id="modal-close" class="text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 transition-colors p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="modal-content" class="p-6 md:p-8 overflow-y-auto text-slate-700 leading-relaxed text-base md:text-lg">
+            <!-- Content injected here via JS -->
+        </div>
+    </div>
+</div>
+
+<footer class="bg-slate-900 text-slate-400 py-10 mt-20 text-center text-sm border-t-4 border-hcmus">
+    <div class="max-w-4xl mx-auto px-4">
+        <p class="font-bold text-slate-200 mb-2 uppercase">TỔNG HỢP CÁC PHƯƠNG PHÁP ỨNG DỤNG TRONG KỸ NĂNG LÀM VIỆC NHÓM VÀ HỌC TẬP</p>
+        <p>Ứng dụng tương tác SPA được thiết kế để trực quan hóa dữ liệu từ báo cáo nguồn. Giúp người dùng dễ dàng tiêu hóa, khám phá và ứng dụng các phương pháp khoa học.</p>
+        <p class="mt-4 text-slate-500 text-xs">Tham khảo: Cottrell (2019), Ebbinghaus, Doran (1981), De Bono (1985), Blakeslee (2004), v.v.</p>
+        
+        <div class="mt-8 pt-6 border-t border-slate-800 text-xs text-slate-500">
+            &copy; Người phát triển web ThS.Đinh Quốc Tuấn - 2026 Khoa Địa Chất - Trường Đại học Khoa học tự nhiên, ĐHQG-HCM
+        </div>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- Navigation Scroll Spy ---
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (scrollY >= (sectionTop - 200)) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').includes(current) && current !== '') {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // --- Label Wrapping Helper ---
+    function wrapLabel(label, limit) {
+        if (label.length <= limit) return label;
+        const words = label.split(' ');
+        const lines = [];
+        let currentLine = words[0];
+        for (let i = 1; i < words.length; i++) {
+            if (currentLine.length + words[i].length + 1 <= limit) {
+                currentLine += ' ' + words[i];
+            } else {
+                lines.push(currentLine);
+                currentLine = words[i];
+            }
+        }
+        lines.push(currentLine);
+        return lines;
+    }
+
+    // --- 1. Forgetting Curve Chart (Chart.js) ---
+    const ctxCurve = document.getElementById('forgettingChart').getContext('2d');
+    
+    const noReviewData = [100, 33, 25, 20, 18, 15, 12, 10];
+    const spacedReviewData = [100, 33, 100, 60, 100, 80, 85, 100];
+
+    const curveChart = new Chart(ctxCurve, {
+        type: 'line',
+        data: {
+            labels: ['Ngày 0', 'Ngày 1', 'Ngày 2', 'Ngày 3', 'Ngày 4', 'Ngày 5', 'Ngày 6', 'Ngày 7'],
+            datasets: [{
+                label: 'Tỷ lệ nhớ (%)',
+                data: noReviewData,
+                borderColor: '#94a3b8', 
+                backgroundColor: 'rgba(148, 163, 184, 0.2)',
+                borderWidth: 3,
+                pointBackgroundColor: '#ef4444',
+                pointRadius: 5,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 110,
+                    grid: { color: '#f1f5f9' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    titleFont: { size: 14 },
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) return label.join(' ');
+                            return label;
+                        },
+                        label: function(context) { return ' Giữ lại: ' + context.parsed.y + '%'; }
+                    }
+                }
+            }
+        }
+    });
+
+    const btnNoReview = document.getElementById('btn-no-review');
+    const btnSpaced = document.getElementById('btn-spaced');
+    const insightText = document.getElementById('forgetting-insight');
+
+    btnNoReview.addEventListener('click', () => {
+        curveChart.data.datasets[0].data = noReviewData;
+        curveChart.data.datasets[0].borderColor = '#94a3b8';
+        curveChart.data.datasets[0].backgroundColor = 'rgba(148, 163, 184, 0.2)';
+        curveChart.update();
+        
+        btnNoReview.classList.replace('bg-slate-100', 'bg-slate-300');
+        btnNoReview.classList.replace('text-slate-600', 'text-slate-800');
+        
+        btnSpaced.classList.replace('bg-hcmus', 'bg-blue-600');
+        btnSpaced.classList.remove('ring-4', 'ring-blue-200');
+        
+        insightText.textContent = "Chỉ sau vài ngày, kiến thức rớt xuống dưới 20% nếu không được củng cố.";
+        insightText.className = "mt-6 text-center text-sm font-medium text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100";
+    });
+
+    btnSpaced.addEventListener('click', () => {
+        curveChart.data.datasets[0].data = spacedReviewData;
+        curveChart.data.datasets[0].borderColor = '#004c8c'; 
+        curveChart.data.datasets[0].backgroundColor = 'rgba(0, 76, 140, 0.15)';
+        curveChart.update();
+        
+        btnSpaced.classList.replace('bg-blue-600', 'bg-hcmus');
+        btnSpaced.classList.add('ring-4', 'ring-blue-200');
+        
+        btnNoReview.classList.replace('bg-slate-300', 'bg-slate-100');
+        btnNoReview.classList.replace('text-slate-800', 'text-slate-600');
+        
+        insightText.textContent = "Lặp lại ngắt quãng kéo mốc trí nhớ về 100% và làm phẳng dần đường cong quên lãng.";
+        insightText.className = "mt-6 text-center text-sm font-bold text-hcmus bg-blue-50 p-4 rounded-xl border border-blue-100";
+    });
+
+    // --- 2. JARS Chart (Chart.js) ---
+    const ctxJars = document.getElementById('jarsChart').getContext('2d');
+    const rawJarsLabels = [
+        'Chi phí thiết yếu (55%)', 
+        'Giáo dục/Phát triển (10%)', 
+        'Hưởng thụ/Sở thích (10%)', 
+        'Đầu tư/Tự do (10%)', 
+        'Tiết kiệm dài hạn (10%)', 
+        'Quỹ từ thiện (5%)'
+    ];
+    
+    // Apply wrapping requirement (16 char limit roughly)
+    const processedJarsLabels = rawJarsLabels.map(label => wrapLabel(label, 16));
+
+    new Chart(ctxJars, {
+        type: 'doughnut',
+        data: {
+            labels: processedJarsLabels,
+            datasets: [{
+                data: [55, 10, 10, 10, 10, 5],
+                backgroundColor: [
+                    '#004c8c', // hcmus blue
+                    '#0ea5e9', // Sky 500
+                    '#14b8a6', // Teal 500
+                    '#f59e0b', // Amber 500
+                    '#ec4899', // Pink 500
+                    '#8b5cf6'  // Violet 500
+                ],
+                borderWidth: 3,
+                borderColor: '#ffffff',
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { 
+                        font: { family: 'Segoe UI', size: 12 },
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    padding: 12,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) return label.join(' ');
+                            return label;
+                        },
+                        label: function(context) { return ' Phân bổ: ' + context.parsed + '%'; }
+                    }
+                }
+            }
+        }
+    });
+
+    // --- 3. Six Thinking Hats Logic ---
+    const hatData = {
+        'white': { title: 'Mũ Trắng: Dữ Liệu', desc: 'Tập trung vào sự thật khách quan, dữ liệu có sẵn và thông tin còn thiếu. Tuyệt đối không phán xét.', bg: 'bg-slate-100', text: 'text-slate-800' },
+        'red': { title: 'Mũ Đỏ: Cảm Xúc', desc: 'Sử dụng trực giác và cảm giác. Bộc lộ cảm xúc về vấn đề mà không cần biện minh hay giải thích logic.', bg: 'bg-red-50', text: 'text-red-900' },
+        'black': { title: 'Mũ Đen: Rủi Ro', desc: 'Tư duy phản biện thận trọng. Phân tích các rủi ro, điểm yếu, và lý do tại sao ý tưởng có thể thất bại.', bg: 'bg-slate-900', text: 'text-slate-100' },
+        'yellow': { title: 'Mũ Vàng: Lạc Quan', desc: 'Tư duy tích cực logic. Tìm kiếm các giá trị, lợi ích và tính khả thi của một ý tưởng mới.', bg: 'bg-yellow-50', text: 'text-yellow-900' },
+        'green': { title: 'Mũ Xanh Lục: Sáng Tạo', desc: 'Đại diện cho ý tưởng mới, phương án thay thế, và sự phát triển. Loại bỏ mọi rào cản tư duy.', bg: 'bg-green-50', text: 'text-green-900' },
+        'blue': { title: 'Mũ Xanh Dương: Quản Lý', desc: 'Kiểm soát tiến trình tư duy. Điều phối viên dùng mũ này để tổng hợp và đưa ra quyết định.', bg: 'bg-blue-50', text: 'text-blue-900' }
+    };
+
+    const hatBtns = document.querySelectorAll('.hat-btn');
+    const hatDisplay = document.getElementById('hat-display');
+    const hatTitle = document.getElementById('hat-title');
+    const hatDesc = document.getElementById('hat-desc');
+
+    hatBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            hatBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const color = this.getAttribute('data-hat');
+            const data = hatData[color];
+            
+            hatTitle.textContent = data.title;
+            hatDesc.textContent = data.desc;
+            
+            hatDisplay.className = `rounded-2xl p-6 md:p-8 min-h-[180px] flex flex-col justify-center items-center text-center transition-all duration-300 border border-slate-200 ${data.bg}`;
+            hatTitle.className = `text-2xl font-bold mb-3 ${data.text}`;
+            hatDesc.className = `text-lg ${data.text}`;
+        });
+    });
+
+    // --- Modal Logic (Show details from Word Doc) ---
+    const modal = document.getElementById('detail-modal');
+    const modalBox = modal.querySelector('.modal-box');
+    const modalTitle = document.getElementById('modal-title');
+    const modalContent = document.getElementById('modal-content');
+    const modalClose = document.getElementById('modal-close');
+    const readMoreBtns = document.querySelectorAll('.read-more-btn');
+
+    const fullTextData = {
+        'hoc-tap': {
+            title: 'Kỹ năng Học tập, Đọc tài liệu và Ghi nhớ',
+            content: `
+                <h4 class="font-bold text-hcmus mt-2 mb-3">Phương pháp Đọc tài liệu:</h4>
+                <p class="mb-4">Để tối ưu hóa việc tiếp thu kiến thức, người học cần áp dụng các phương pháp đọc tài liệu một cách có chiến lược. Theo Cottrell (2019), các phương pháp nền tảng bao gồm kỹ thuật <strong>Skimming (Đọc lướt)</strong> giúp nắm bắt nội dung cốt lõi và ý chính thông qua việc quét tiêu đề, đoạn mở đầu và từ khóa; cùng với <strong>Scanning (Đọc chọn lọc/quét)</strong> để tìm kiếm nhanh các thông tin, dữ liệu cụ thể mà không cần đọc toàn bộ văn bản. Khi cần phân tích sâu, phương pháp <strong>Intensive Reading (Đọc chuyên sâu)</strong> đòi hỏi người học đọc chậm rãi, cẩn thận từng phần để ghi chú khái niệm và hiểu sâu vấn đề. Ở mức độ tư duy cao hơn, <strong>Critical Reading (Đọc phản biện)</strong> kết hợp việc đọc với đặt câu hỏi, đánh giá tính logic, lập luận và bằng chứng của tác giả để hình thành quan điểm độc lập của riêng mình.</p>
+                <p class="mb-4">Bên cạnh đó, <strong>Phương pháp SQ3R</strong> cung cấp một quy trình đọc hiểu bài bản qua 5 bước: Survey (Khảo sát), Question (Đặt câu hỏi), Read (Đọc), Recite (Ghi nhớ) và Review (Ôn tập). Đặc biệt trong môi trường giáo dục đại học, <strong>Phương pháp FOFO (First Organise and Find Out)</strong> được khuyến khích áp dụng nhằm trao quyền tự chủ, đòi hỏi sinh viên phải tự sắp xếp và chủ động tìm hiểu kiến thức từ nguồn sách.</p>
+                
+                <h4 class="font-bold text-hcmus mt-6 mb-3">Phương pháp Ghi chép:</h4>
+                <p class="mb-4">Đối với kỹ năng quản lý thông tin, <strong>Phương pháp Cornell</strong> (do Walter Pauk phát triển vào những năm 1950) giúp lưu trữ, hệ thống hóa và tự kiểm tra kiến thức dễ dàng bằng cách phân chia trang giấy thành 3 phần: cột từ khóa/câu hỏi, cột ghi chép chính, và phần tóm tắt ở cuối. Một công cụ trực quan phổ biến khác là <strong>Sơ đồ tư duy (Mindmap)</strong> của Tony Buzan, sử dụng cấu trúc rẽ nhánh từ một từ khóa trung tâm kết hợp với màu sắc, hình ảnh để kích thích não bộ. Ngoài ra, <strong>Ghi chép tuyến tính (Linear Notes)</strong> là cách ghi chép truyền thống theo trình tự từ trên xuống dưới, sử dụng tiêu đề, gạch đầu dòng và các ký hiệu viết tắt để cấu trúc bài học.</p>
+                
+                <h4 class="font-bold text-hcmus mt-6 mb-3">Phương pháp Ghi nhớ và Tiếp thu (Phong cách học):</h4>
+                <p class="mb-4">Về các kỹ thuật ghi nhớ, <strong>Spaced Repetition (Lặp lại ngắt quãng)</strong> là chiến lược ôn tập kiến thức theo các chu kỳ thời gian tăng dần nhằm chuyển thông tin từ trí nhớ ngắn hạn sang dài hạn, qua đó khắc phục hiện tượng "Đường cong quên lãng" (Forgetting Curve) của Ebbinghaus. Để củng cố khả năng truy xuất, phương pháp <strong>Active Recall (Hồi tưởng chủ động)</strong> yêu cầu người học tự kiểm tra bản thân bằng cách tự trích xuất thông tin từ não bộ thay vì chỉ đọc lại tài liệu một cách thụ động. Một biến thể thực hành của kỹ thuật này là <strong>Blurting</strong>, trong đó người học viết ra giấy tất cả những gì nhớ được về một chủ đề trong giới hạn thời gian mà không nhìn tài liệu, sau đó đối chiếu lại để tìm ra lỗ hổng kiến thức.</p>
+                <p class="mb-4">Đối với các dữ liệu khó và phức tạp, <strong>Memory Palace (Cung điện ký ức / Method of Loci)</strong> giúp gắn thông tin cần nhớ vào các vị trí trong không gian quen thuộc trong tâm trí để tối ưu hóa quá trình truy xuất. Ngoài ra, <strong>Phương pháp Feynman</strong> giúp khắc sâu kiến thức bằng cách đơn giản hóa thông tin và giảng lại cho người khác hiểu.</p>
+                <p class="mb-4">Cuối cùng, việc tiếp thu kiến thức còn bị chi phối bởi các phong cách học tập. Tiêu biểu là <strong>Học qua trải nghiệm (Experiential Learning)</strong> theo mô hình của David Kolb gồm 4 bước: Trải nghiệm cụ thể, Quan sát phản tư, Hình thành khái niệm và Thử nghiệm áp dụng. Đồng thời, <strong>Mô hình VARK / VAK</strong> (được nghiên cứu bởi Dawna Markova) giúp phân loại phong cách học tập của mỗi cá nhân theo hệ thống giác quan: Thị giác (Visual), Thính giác (Auditory), Đọc/Viết (Reading/Writing), và Vận động/Xúc giác (Kinesthetic).</p>
+            `
+        },
+        'thoi-gian': {
+            title: 'Kỹ năng Quản lý Thời gian và Đặt mục tiêu',
+            content: `
+                <h4 class="font-bold text-hcmus mt-2 mb-3">1. Kỹ năng Thiết lập Mục tiêu</h4>
+                <p class="mb-4">Để định hướng hành động một cách khoa học, việc thiết lập mục tiêu cần dựa trên các khung lý thuyết chuẩn mực. Theo Doran (1981), <strong>Mô hình SMART</strong> là công cụ giúp xác định mục tiêu thông qua 5 tiêu chí cốt lõi: Specific (Cụ thể), Measurable (Đo lường được), Achievable (Khả thi), Relevant (Thực tế), và Time-bound (Có thời hạn). Bên cạnh đó, để chuyển hóa mục tiêu thành hành động thực tiễn, Whitmore (1992) đề xuất <strong>Phương pháp GROW</strong>, giúp thiết lập và theo đuổi mục tiêu thông qua 4 bước: Goal (Mục tiêu), Reality (Thực tế), Options (Lựa chọn) và Will (Ý chí hành động).</p>
+                
+                <h4 class="font-bold text-hcmus mt-6 mb-3">2. Kỹ năng Sắp xếp và Ưu tiên Công việc</h4>
+                <p class="mb-4">Khi đối mặt với khối lượng công việc lớn, việc phân bổ nguồn lực hợp lý là điều bắt buộc. <strong>Ma trận Eisenhower</strong> hỗ trợ người dùng sắp xếp và phân loại công việc dựa trên 2 tiêu chí là mức độ Khẩn cấp và Quan trọng, từ đó chia thành 4 góc phần tư để có hướng xử lý (Làm ngay, Lên kế hoạch, Ủy thác, Loại bỏ). Để tối ưu hóa hơn nữa, Koch (1998) khuyến khích áp dụng <strong>Quy luật 80/20 (Nguyên tắc Pareto)</strong>, một nguyên lý giúp nhận diện 20% nỗ lực hoặc công việc cốt lõi mang lại 80% kết quả, từ đó tập trung ưu tiên giải quyết chúng trước tiên để tránh dàn trải năng lượng.</p>
+                
+                <h4 class="font-bold text-hcmus mt-6 mb-3">3. Kỹ năng Quản lý Thời gian và Năng suất</h4>
+                <p class="mb-4">Để đảm bảo các kế hoạch được thực thi mà không bị phân tâm, chiến lược <strong>Time Blocking (Phân khu thời gian)</strong> được áp dụng bằng cách chia một ngày thành các "khối thời gian" cụ thể, trong đó mỗi khối chỉ dành riêng cho một nhiệm vụ duy nhất để tránh xao nhãng và đa nhiệm kém hiệu quả.</p>
+                <p class="mb-4">Trong quá trình thực hiện từng khối công việc, Cirillo (2018) đã phát triển <strong>Kỹ thuật Pomodoro</strong>, một phương pháp giúp duy trì não bộ ở trạng thái tốt nhất bằng cách chia nhỏ thời gian làm việc thành các phiên 25 phút tập trung cao độ, xen kẽ với 5 phút nghỉ ngắn. Cuối cùng, để giải quyết triệt để thói quen trì hoãn, cần áp dụng <strong>Luật Parkinson</strong> (đề xuất bởi Cyril Northcote Parkinson vào năm 1955). Định luật này chỉ ra rằng công việc sẽ luôn tự giãn nở để lấp đầy thời gian được giao; do vậy, việc đặt ra giới hạn thời gian chặt chẽ và ngắn hơn cho công việc là chiến lược bắt buộc để thúc đẩy tiến độ.</p>
+            `
+        },
+        'tu-duy': {
+            title: 'Kỹ năng Tư duy Phản biện và Giải quyết Vấn đề',
+            content: `
+                <h4 class="font-bold text-hcmus mt-2 mb-3">1. Kỹ năng Tư duy Sáng tạo (Creative Thinking)</h4>
+                <p class="mb-4">Để thúc đẩy sự đổi mới và tạo ra những ý tưởng đột phá, người học và người làm việc có thể áp dụng các công cụ tư duy sáng tạo kinh điển. Theo Michalko (2006), <strong>Mô hình SCAMPER</strong> là một kỹ thuật mạnh mẽ giúp cải tiến sản phẩm, dịch vụ hoặc quy trình thông qua 7 góc nhìn: Substitute (Thay thế), Combine (Kết hợp), Adapt (Thích nghi), Modify (Điều chỉnh), Put to other uses (Dùng vào việc khác), Eliminate (Loại bỏ), và Reverse (Đảo ngược/Sắp xếp lại).</p>
+                <p class="mb-4">Bên cạnh đó, nhằm tránh lối tư duy phiến diện hoặc chủ quan trong làm việc nhóm, De Bono (1985) đã phát triển phương pháp <strong>Sáu chiếc mũ tư duy (Six Thinking Hats)</strong>. Phương pháp này yêu cầu các thành viên nhìn nhận vấn đề từ 6 góc độ khác biệt, được đại diện bởi 6 màu mũ: Mũ trắng (Dữ liệu khách quan), Mũ đỏ (Cảm xúc và trực giác), Mũ đen (Phán xét rủi ro), Mũ vàng (Lạc quan, tích cực), Mũ xanh lục (Sáng tạo), và Mũ xanh dương (Quản lý tiến trình).</p>
+                <p class="mb-4">Ở giai đoạn khơi gợi ý tưởng ban đầu, <strong>Kỹ thuật Brainstorming (Động não)</strong> do Alex Osborn đề xướng vào năm 1941 đóng vai trò cốt lõi. Đây là phương pháp tập kích não nhằm tạo ra càng nhiều ý tưởng càng tốt trong cùng một thời gian, tuân thủ nguyên tắc tuyệt đối là không phê phán hay phán xét bất kỳ ý tưởng nào khi đang thu thập. Ngoài ra, <strong>Tư duy ngược (Reverse thinking)</strong> cũng là một kỹ thuật sắc bén; thay vì trực tiếp tìm cách giải quyết vấn đề, người tư duy sẽ lật ngược tình huống bằng cách tập trung xem xét các nguyên nhân gây ra vấn đề hoặc hành động nào làm tình trạng tồi tệ hơn, từ đó tìm ra giải pháp phòng tránh hiệu quả.</p>
+
+                <h4 class="font-bold text-hcmus mt-6 mb-3">2. Kỹ năng Tư duy Phản biện (Critical Thinking)</h4>
+                <p class="mb-4">Trong quá trình đào sâu và phân tích bản chất của sự việc, <strong>Phương pháp truy vấn Socratic (Socratic Questioning)</strong> là một kỹ thuật phản biện nền tảng. Phương pháp này vận hành bằng cách liên tục đặt ra một hệ thống câu hỏi có cấu trúc (như câu hỏi làm rõ, thăm dò giả định, tìm lý do/bằng chứng, và câu hỏi về hệ quả) để bóc tách bản chất và tìm ra nguyên nhân gốc rễ của vấn đề.</p>
+                <p class="mb-4">Để đảm bảo không bỏ sót bất kỳ khía cạnh nào khi phân tích thực trạng, người học có thể sử dụng <strong>Kỹ thuật 5W1H (hoặc 5W2H)</strong>. Đây là công cụ giúp định rõ vấn đề một cách toàn diện bằng cách đặt hệ thống câu hỏi xoay quanh 7 yếu tố: What (Cái gì), Where (Ở đâu), When (Khi nào), Why (Tại sao), Who (Ai liên quan), How (Như thế nào) và How much (Mức độ/Chi phí là bao nhiêu).</p>
+
+                <h4 class="font-bold text-hcmus mt-6 mb-3">3. Kỹ năng Giải quyết Vấn đề (Problem Solving)</h4>
+                <p class="mb-4">Khi đối mặt với các tình huống rắc rối hoặc phức tạp, việc áp dụng một tư duy hệ thống là điều bắt buộc. Một trong những phương pháp nền tảng nhất là <strong>Quy trình 6 bước giải quyết vấn đề</strong>, bao gồm các giai đoạn tuần tự: 1) Nhận định vấn đề, 2) Tìm hiểu nguyên nhân gốc rễ, 3) Lập sơ đồ giải pháp, 4) Lựa chọn phương án tối ưu, 5) Lập kế hoạch thực thi, và 6) Giám sát và đánh giá.</p>
+                <p class="mb-4">Trong bước phân tích nguyên nhân và mổ xẻ vấn đề trước khi ra quyết định, người học có thể sử dụng các công cụ phân tích chuyên sâu. Các công cụ tiêu biểu bao gồm: <strong>Biểu đồ xương cá (Fishbone/Ishikawa)</strong> giúp nhìn nhận tổng thể mối quan hệ nhân – quả; <strong>Phân tích SWOT</strong> để đánh giá điểm mạnh, điểm yếu, cơ hội và thách thức; hoặc kỹ thuật đánh giá <strong>Ưu và Khuyết điểm (Pros and Cons)</strong> nhằm so sánh trực quan các lựa chọn.</p>
+
+                <h4 class="font-bold text-hcmus mt-6 mb-3">4. Kỹ năng Ra quyết định Quản trị (Decision Making)</h4>
+                <p class="mb-4"><strong>Trong tình huống áp lực cao:</strong> Khi bị giới hạn về mặt thời gian và không có lượng thông tin đầy đủ, <strong>Mô hình Hợp lý có giới hạn (Bounded Rationality)</strong> (do Herbert A. Simon đề xuất) là phương pháp tối ưu giúp đưa ra quyết định nhanh chóng, "đủ tốt" để giải quyết khủng hoảng thay vì tìm kiếm sự hoàn hảo tuyệt đối. Bên cạnh đó, để phản ứng nhanh nhạy trong môi trường biến động, chiến lược gia John Boyd đã phát triển <strong>Vòng lặp OODA</strong>. Phương pháp này vận hành qua 4 chu trình liên tục: Quan sát (Observe), Định hướng (Orient), Quyết định (Decide), và Hành động (Act).</p>
+                <p class="mb-4"><strong>Trong tình huống có thời gian phân tích:</strong> Các nhà quản trị có thể áp dụng các mô hình chuyên sâu khác, bao gồm: Mô hình ra quyết định <strong>Dựa trên dữ liệu</strong> (nhằm giảm thiểu thiên kiến cá nhân); mô hình <strong>Bậc thang suy luận (Ladder of Inference)</strong> (giúp minh họa các bước logic đi từ dữ liệu quan sát được đến việc hình thành niềm tin và hành động); và <strong>Mô hình Vroom-Yetton-Jago</strong> (hỗ trợ xác định mức độ tham gia của nhóm vào quá trình ra quyết định thông qua các hình thức như chuyên quyền, tham vấn hay đồng thuận).</p>
+            `
+        },
+        'thong-tin': {
+            title: 'Kỹ năng Tìm kiếm, Chọn lọc và Xử lý Thông tin',
+            content: `
+                <h4 class="font-bold text-hcmus mt-2 mb-3">1. Kỹ năng Đánh giá và Kiểm chứng Thông tin</h4>
+                <p class="mb-4">Trong bối cảnh bùng nổ thông tin, việc xác định độ tin cậy của nguồn tài liệu là kỹ năng thiết yếu. Theo Blakeslee (2004), <strong>Phương pháp CRAAP</strong> là một bộ công cụ chuẩn mực giúp đánh giá độ tin cậy của tài liệu học thuật dựa trên 5 tiêu chí cốt lõi: Currency (Tính cập nhật), Relevance (Tính liên quan), Authority (Tính thẩm quyền), Accuracy (Độ chính xác) và Purpose (Mục đích).</p>
+                <p class="mb-4">Bên cạnh đó, để đối phó với tình trạng tin giả lan truyền nhanh chóng trên mạng xã hội, chuyên gia Mike Caulfield đã phát triển <strong>Phương pháp SIFT</strong>. Đây là kỹ thuật gồm 4 bước hành động thực tiễn giúp người dùng kiểm chứng thông tin trực tuyến: Stop (Dừng lại để kiểm soát cảm xúc), Investigate (Kiểm tra nguồn tin), Find (Tìm nguồn thông tin tốt hơn để đối chiếu), và Trace (Truy vết ngữ cảnh gốc của thông tin/hình ảnh).</p>
+                
+                <h4 class="font-bold text-hcmus mt-6 mb-3">2. Kỹ năng Tìm kiếm và Xử lý Thông tin Số</h4>
+                <p class="mb-4">Sự phát triển của Trí tuệ nhân tạo (AI) đòi hỏi người học phải có chiến lược tương tác thông minh. Khi sử dụng các công cụ như ChatGPT, người dùng nên áp dụng <strong>Quy tắc 3T (Tìm kiếm - Tách lỗi - Tinh chỉnh)</strong>. Chiến lược này giúp tối ưu hóa câu lệnh (prompt) trong quá trình tìm kiếm, phát hiện và tách các thông tin sai lệch hoặc thiên kiến do AI tạo ra, và cuối cùng là tinh chỉnh lại nội dung bằng ngôn ngữ và tư duy phản biện của chính mình.</p>
+                <p class="mb-4">Cuối cùng, nhằm nâng cao hiệu suất tra cứu dữ liệu trên Internet, người học cần thành thạo <strong>Tìm kiếm bằng Toán tử Boolean & Cú pháp nâng cao</strong>. Theo Cottrell (2019), việc sử dụng các toán tử logic như AND, OR, NOT giúp người dùng dễ dàng thu hẹp hoặc mở rộng phạm vi tìm kiếm. Hơn thế nữa, khi kết hợp với kỹ thuật Google Dorks như lệnh <code>site:</code> (để giới hạn kết quả trong một tên miền trang web cụ thể) hoặc lệnh <code>filetype:</code> (để trích xuất chính xác định dạng tài liệu như PDF, DOCX), quá trình truy xuất dữ liệu sẽ trở nên chính xác, chuyên sâu và tiết kiệm thời gian hơn rất nhiều.</p>
+            `
+        },
+        'toan-dien': {
+            title: 'Kỹ năng Quản lý Tài chính, Sức khỏe và Đội nhóm',
+            content: `
+                <h4 class="font-bold text-hcmus mt-2 mb-3">1. Kỹ năng Quản lý Tài chính Cá nhân</h4>
+                <p class="mb-4">Để kiểm soát dòng tiền và xây dựng nền tảng tài chính bền vững, mỗi cá nhân có thể áp dụng các phương pháp quản lý tài chính đã được hệ thống hóa. Dưới đây là 4 phương pháp tiêu biểu:</p>
+                <ul class="list-disc pl-5 mb-4 space-y-2">
+                    <li><strong>Phương pháp 50/30/20:</strong> Được phổ biến rộng rãi bởi chuyên gia tài chính Elizabeth Warren, quy tắc này đề xuất việc phân bổ tổng thu nhập thành ba phần cơ bản: 50% dành cho các nhu cầu thiết yếu (nhà ở, ăn uống, đi lại), 30% dành cho các mong muốn cá nhân (giải trí, mua sắm), và 20% cuối cùng dành cho mục tiêu tiết kiệm, đầu tư hoặc trả nợ.</li>
+                    <li><strong>Phương pháp Kakeibo:</strong> Đây là nghệ thuật ghi chép và tiết kiệm truyền thống của Nhật Bản. Phương pháp này giúp người dùng quản lý dòng tiền một cách thủ công thông qua sổ tay, từ đó nâng cao sự phản tư và kiểm soát chặt chẽ các khoản thu chi hằng ngày.</li>
+                    <li><strong>Phương pháp Pay Yourself First (Trả cho bản thân trước):</strong> Nhấn mạnh việc ưu tiên trích một phần tiền để tiết kiệm hoặc đầu tư ngay khi vừa nhận được thu nhập, trước khi tiến hành bất kỳ khoản chi tiêu nào khác. Định hình tính kỷ luật và tránh thâm hụt.</li>
+                    <li><strong>Phương pháp 6 chiếc lọ (JARS System):</strong> Sáng tạo bởi T. Harv Eker, chia tổng thu nhập vào 6 quỹ riêng biệt: Chi phí thiết yếu (55%), Giáo dục/phát triển bản thân (10%), Hưởng thụ/sở thích cá nhân (10%), Đầu tư/tự do tài chính (10%), Tiết kiệm dài hạn (10%), và Quỹ từ thiện/cho đi (5%).</li>
+                </ul>
+
+                <h4 class="font-bold text-hcmus mt-6 mb-3">2. Kỹ năng Chăm sóc Sức khỏe (Thể chất & Tinh thần)</h4>
+                <p class="mb-4">Để duy trì năng lượng và sự bền bỉ trong quá trình học tập cũng như làm việc, việc chăm sóc sức khỏe toàn diện đóng vai trò vô cùng quan trọng:</p>
+                <ul class="list-disc pl-5 mb-4 space-y-2">
+                    <li><strong>Phương pháp chạy bộ 80/20:</strong> Chiến lược phân bổ thời gian tập luyện khoa học: 80% thời lượng được dành cho các bài tập ở cường độ nhẹ, và chỉ 20% thời lượng dành cho cường độ cao. Xây sức bền hiệu quả mà không bị quá tải.</li>
+                    <li><strong>Phương pháp thở 4 thì:</strong> Phát triển bởi GS. Nguyễn Khắc Viện, bài tập hô hấp kết hợp nhịp điệu đều đặn (hít vào, giữ hơi, thở ra, giữ hơi) giúp điều hòa hệ thần kinh, giảm căng thẳng cực kỳ hiệu quả.</li>
+                    <li><strong>Ngủ đa pha (Polyphasic Sleep):</strong> Chia nhỏ thời gian ngủ thành nhiều giấc ngắn rải rác trong ngày giúp tái tạo năng lượng nhanh chóng và duy trì sự tỉnh táo liên tục.</li>
+                    <li><strong>Giãn cơ (Stretching):</strong> Việc thực hành giãn cơ thường xuyên là bắt buộc với người ngồi lâu, giúp phục hồi cơ bắp, giảm thiểu tình trạng đau mỏi cổ - vai - gáy và hỗ trợ lưu thông máu.</li>
+                </ul>
+
+                <h4 class="font-bold text-hcmus mt-6 mb-3">3. Kỹ năng Thuyết trình và Làm việc nhóm</h4>
+                <p class="mb-4">Trong môi trường học thuật và làm việc chuyên nghiệp, kỹ năng thuyết trình và làm việc nhóm luôn đi liền với nhau và đòi hỏi việc áp dụng các công cụ có tính hệ thống cao:</p>
+                <ul class="list-disc pl-5 mb-4 space-y-2">
+                    <li><strong>Quy trình TRAC (khi thuyết trình/xử lý Q&A):</strong> Thank (Cảm ơn người đặt câu hỏi nhằm thể hiện sự tôn trọng), Repeat (Lặp lại/diễn giải lại câu hỏi để xác nhận và có thời gian suy nghĩ), Answer (Trả lời trực tiếp vào trọng tâm), và Control (Kiểm soát thời lượng, tiến độ chung).</li>
+                    <li><strong>Phương pháp Khung logic (Logical Framework trong nhóm):</strong> Thiết kế dưới dạng một ma trận bảng 4x4, giúp nhóm hệ thống hóa toàn bộ dự án. Ma trận yêu cầu làm rõ 4 hàng ngang (Mục đích, Mục tiêu, Kết quả mong đợi, Các hoạt động) đối chiếu với 4 cột dọc (Nội dung, Chỉ báo, Nguồn chứng minh, và Điều kiện/Giả định rủi ro).</li>
+                </ul>
+            `
+        }
+    };
+
+    function openModal(sectionId) {
+        const data = fullTextData[sectionId];
+        if(!data) return;
+        
+        modalTitle.textContent = data.title;
+        modalContent.innerHTML = data.content;
+        
+        modal.classList.remove('hidden');
+        // Kích hoạt animation
+        void modal.offsetWidth; 
+        modal.classList.remove('opacity-0');
+        modalBox.classList.remove('scale-95');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.classList.add('opacity-0');
+        modalBox.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }, 300); // Đợi animation chạy xong
+    }
+
+    readMoreBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const section = btn.getAttribute('data-section');
+            openModal(section);
+        });
+    });
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        // Đóng khi click ra ngoài vùng trắng (modal-box)
+        if (e.target === modal) closeModal();
+    });
+
+});
+</script>
+</body>
+</html>
