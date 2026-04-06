@@ -3,89 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kỹ năng làm việc nhóm và học tập</title>
+    <title>Trang Tổng Hợp - Kỹ năng làm việc nhóm và học tập</title>
+    <!-- Import Tailwind CSS và FontAwesome tương tự file gốc -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { 
-            display: flex; 
-            margin: 0; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            height: 100vh; 
-            overflow: hidden; /* Chống cuộn trang tổng, chỉ cuộn phần nội dung bên trong iframe */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; }
+        
+        /* Cấu hình màu sắc đồng bộ với môn học */
+        :root {
+            --hcmus-blue: #004c8c;
         }
-        /* Cột Menu bên trái */
-        .sidebar { 
-            width: 250px; 
-            background-color: #2c3e50; 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
+        .header-gradient { background: linear-gradient(to right, #ffffff, #e6f0fa); }
+        .text-hcmus { color: var(--hcmus-blue); }
+        .bg-hcmus { background-color: var(--hcmus-blue); }
+        .border-hcmus { border-color: var(--hcmus-blue); }
+        
+        /* Style cho nút bấm Menu bên trái */
+        .tab-btn {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            color: #d1d5db; /* gray-300 */
+            border-bottom: 1px solid #374151; /* gray-700 */
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
         }
-        .sidebar h2 { 
-            text-align: center; 
-            font-size: 18px; 
-            padding: 20px 10px; 
-            margin: 0; 
-            background-color: #1a252f; 
+        .tab-btn:hover {
+            background-color: #374151;
+            color: white;
         }
-        .sidebar button { 
-            background: none; 
-            color: white; 
-            border: none; 
-            padding: 15px 20px; 
-            text-align: left; 
-            font-size: 16px; 
-            cursor: pointer; 
-            border-bottom: 1px solid #34495e; 
-            transition: 0.3s;
-        }
-        .sidebar button:hover, .sidebar button.active { 
-            background-color: #34495e; 
-            border-left: 4px solid #3498db; 
-        }
-        /* Khu vực hiển thị nội dung bên phải */
-        .content { 
-            flex-grow: 1; 
-            background-color: #ecf0f1; 
-        }
-        iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
+        .tab-btn.active {
+            background-color: #374151;
+            color: white;
+            border-left: 4px solid #3b82f6; /* blue-500 */
+            font-weight: bold;
         }
     </style>
 </head>
-<body>
+<!-- Khóa cuộn trang tổng, đặt chiều cao bằng đúng 100% màn hình -->
+<body class="flex flex-col h-screen overflow-hidden bg-gray-100">
 
-    <!-- Khung Menu -->
-    <div class="sidebar">
-        <h2>Menu Môn Học</h2>
-        <button class="tab-btn active" onclick="openTab(this, 'noidung01.html')">1. Tổng quan môn học</button>
-        <button class="tab-btn" onclick="openTab(this, 'noidung02.html')">2. Đánh giá nhóm (Rubric)</button>
-        <button class="tab-btn" onclick="openTab(this, 'noidung03.html')">3. Bài tập Flashcard</button>
-        <button class="tab-btn" onclick="openTab(this, 'noidung04.html')">4. Bảng phân công nhiệm vụ</button>
+    <!-- HEADER: Logo Trường, Logo Khoa & Tên Môn Học -->
+    <header class="header-gradient shadow-md border-b-4 border-hcmus shrink-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex-shrink-0">
+                    <img src="https://hcmus.edu.vn/wp-content/uploads/2023/04/Logo-chinh-e1681638380305.png" alt="Logo HCMUS" class="h-12 md:h-16 object-contain">
+                </div>
+                <div class="text-center flex-grow">
+                    <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wide">KHOA TOÁN TIN HỌC</h2>
+                    <h1 class="text-lg md:text-xl font-bold text-hcmus mt-1">HỌC PHẦN BAA00008</h1>
+                    <p class="text-sm font-medium text-gray-700">Kỹ năng làm việc nhóm và học tập</p>
+                </div>
+                <div class="flex-shrink-0">
+                    <img src="https://tuyensinh.hcmus.edu.vn/wp-content/uploads/2024/12/Khoa-Toan-Tin-hoc-568x400.png" alt="Logo Toan-tin" class="h-12 md:h-16 object-contain">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN: Khu vực nội dung chia làm 2 cột (Menu và Iframe) -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Cột Menu bên trái -->
+        <div class="w-64 bg-gray-900 flex flex-col shrink-0 overflow-y-auto shadow-lg z-10">
+            <h2 class="text-center text-white font-bold py-4 bg-gray-800 uppercase tracking-wide text-sm border-b border-gray-700">
+                <i class="fas fa-bars mr-2"></i>Menu Môn Học
+            </h2>
+            
+            <!-- Danh sách các nút chuyển trang html -->
+            <button class="tab-btn active" onclick="openTab(this, 'noidung01.html')">
+                <i class="fas fa-home mr-3 w-5 text-center"></i>1. Tổng quan môn học
+            </button>
+            <button class="tab-btn" onclick="openTab(this, 'noidung02.html')">
+                <i class="fas fa-clipboard-check mr-3 w-5 text-center"></i>2. Đánh giá nhóm
+            </button>
+            <button class="tab-btn" onclick="openTab(this, 'noidung03.html')">
+                <i class="fas fa-clone mr-3 w-5 text-center"></i>3. Bài tập Flashcard
+            </button>
+            <button class="tab-btn" onclick="openTab(this, 'noidung04.html')">
+                <i class="fas fa-tasks mr-3 w-5 text-center"></i>4. Bảng phân công
+            </button>
+        </div>
+
+        <!-- Khung hiển thị nội dung web con (Iframe) -->
+        <div class="flex-1 bg-white relative">
+            <iframe id="mainFrame" src="noidung01.html" class="w-full h-full border-none"></iframe>
+        </div>
+
     </div>
 
-    <!-- Khung hiển thị nội dung trang web con -->
-    <div class="content">
-        <!-- Đặt src mặc định là file đầu tiên hiển thị khi mở trang web -->
-        <iframe id="mainFrame" src="noidung01.html"></iframe>
-    </div>
+    <!-- FOOTER: Bản quyền và thông tin -->
+    <footer class="bg-white border-t border-gray-200 shrink-0 z-10">
+        <div class="text-center text-gray-500 text-xs py-3">
+            &copy; Người phát triển web ThS.Đinh Quốc Tuấn - 2026 Khoa Địa Chất - Trường Đại học Khoa học tự nhiên, ĐHQG-HCM
+        </div>
+    </footer>
 
+    <!-- Script xử lý việc chuyển đổi tab -->
     <script>
         function openTab(btnElement, url) {
-            // 1. Đổi đường dẫn của iframe thành file html mới
+            // 1. Đổi nguồn iframe sang trang mới
             document.getElementById('mainFrame').src = url;
 
-            // 2. Xóa trạng thái 'active' của tất cả các nút trong menu
+            // 2. Xóa trạng thái active của tất cả các nút
             var buttons = document.getElementsByClassName("tab-btn");
             for (var i = 0; i < buttons.length; i++) {
                 buttons[i].classList.remove("active");
             }
 
-            // 3. Đánh dấu nút vừa được click là 'active' (để hiện viền xanh nhận diện)
+            // 3. Đánh dấu nút đang được chọn
             btnElement.classList.add("active");
         }
     </script>
-
 </body>
 </html>
