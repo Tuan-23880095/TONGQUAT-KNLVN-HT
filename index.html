@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang Tổng Hợp - Kỹ năng làm việc nhóm và học tập</title>
-    <!-- Import Tailwind CSS và FontAwesome tương tự file gốc -->
+    <!-- Import Tailwind CSS và FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -24,8 +24,8 @@
         .tab-btn {
             text-align: left;
             padding: 1rem 1.5rem;
-            color: #d1d5db; /* gray-300 */
-            border-bottom: 1px solid #374151; /* gray-700 */
+            color: #d1d5db;
+            border-bottom: 1px solid #374151;
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -37,92 +37,115 @@
         .tab-btn.active {
             background-color: #374151;
             color: white;
-            border-left: 4px solid #3b82f6; /* blue-500 */
+            border-left: 4px solid #3b82f6;
             font-weight: bold;
         }
     </style>
 </head>
-<!-- Khóa cuộn trang tổng, đặt chiều cao bằng đúng 100% màn hình -->
 <body class="flex flex-col h-screen overflow-hidden bg-gray-100">
 
     <!-- HEADER: Logo Trường, Logo Khoa & Tên Môn Học -->
-    <header class="header-gradient shadow-md border-b-4 border-hcmus shrink-0 z-10">
+    <header class="header-gradient shadow-md border-b-4 border-hcmus shrink-0 z-20 relative">
         <div class="max-w-7xl mx-auto px-4 py-3">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex-shrink-0">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <div class="flex-shrink-0 hidden md:block">
                     <img src="https://hcmus.edu.vn/wp-content/uploads/2023/04/Logo-chinh-e1681638380305.png" alt="Logo HCMUS" class="h-12 md:h-16 object-contain">
                 </div>
-                <div class="text-center flex-grow">
+                <div class="flex-grow">
                     <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wide">KHOA TOÁN TIN HỌC</h2>
                     <h1 class="text-lg md:text-xl font-bold text-hcmus mt-1">HỌC PHẦN BAA00008</h1>
                     <p class="text-sm font-medium text-gray-700">Kỹ năng làm việc nhóm và học tập</p>
                 </div>
-                <div class="flex-shrink-0">
+                <div class="flex-shrink-0 hidden md:block">
                     <img src="https://tuyensinh.hcmus.edu.vn/wp-content/uploads/2024/12/Khoa-Toan-Tin-hoc-568x400.png" alt="Logo Toan-tin" class="h-12 md:h-16 object-contain">
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- MAIN: Khu vực nội dung chia làm 2 cột (Menu và Iframe) -->
-    <div class="flex flex-1 overflow-hidden">
+    <!-- MAIN: Khu vực nội dung -->
+    <div class="flex flex-1 overflow-hidden relative">
         
-        <!-- Cột Menu bên trái -->
-        <div class="w-64 bg-gray-900 flex flex-col shrink-0 overflow-y-auto shadow-lg z-10">
-            <h2 class="text-center text-white font-bold py-4 bg-gray-800 uppercase tracking-wide text-sm border-b border-gray-700">
-                <i class="fas fa-bars mr-2"></i>Menu Môn Học
-            </h2>
+        <!-- Màn che tối màu trên mobile khi mở menu -->
+        <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden"></div>
+        
+        <!-- Cột Menu bên trái (Sẽ ẩn đi thành ngăn kéo trên Mobile) -->
+        <div id="sidebar" class="absolute z-30 inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-300 ease-in-out w-64 bg-gray-900 flex flex-col shrink-0 overflow-y-auto shadow-xl h-full">
+            <div class="flex justify-between items-center bg-gray-800 p-4 border-b border-gray-700">
+                <h2 class="text-white font-bold uppercase tracking-wide text-sm">
+                    <i class="fas fa-bars mr-2"></i>Menu Môn Học
+                </h2>
+                <!-- Nút đóng menu trên mobile -->
+                <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white md:hidden">
+                    <i class="fas fa-times fa-lg"></i>
+                </button>
+            </div>
             
             <!-- Danh sách các nút chuyển trang html -->
             <button class="tab-btn active" onclick="openTab(this, 'noidung01.html')">
                 <i class="fas fa-home mr-3 w-5 text-center"></i>1. Tổng quan môn học
             </button>
             <button class="tab-btn" onclick="openTab(this, 'noidung5.html')">
-                <i class="fas fa-book-open mr-3 w-5 text-center"></i>2. Cẩm nang các phương pháp
+                <i class="fas fa-book-open mr-3 w-5 text-center"></i>2. Cẩm nang phương pháp
             </button>
             <button class="tab-btn" onclick="openTab(this, 'danhgiavongtron.html')">
-                <i class="fas fa-clipboard-check mr-3 w-5 text-center"></i>2. Đánh giá nhóm
+                <i class="fas fa-clipboard-check mr-3 w-5 text-center"></i>3. Đánh giá nhóm
             </button>
             <button class="tab-btn" onclick="openTab(this, 'noidung03.html')">
-                <i class="fas fa-clone mr-3 w-5 text-center"></i>3. Bài tập Flashcard
+                <i class="fas fa-clone mr-3 w-5 text-center"></i>4. Bài tập Flashcard
             </button>
             <button class="tab-btn" onclick="openTab(this, 'phannhom.html')">
-                <i class="fas fa-tasks mr-3 w-5 text-center"></i>4. Bảng thứ tự nhóm thuyết trình - đề tài
+                <i class="fas fa-tasks mr-3 w-5 text-center"></i>5. Bảng thứ tự nhóm
             </button>
-            <button class="tab-btn active" onclick="openTab(this, 'https://tuan-23880095.github.io/KNLVN-DANHGIACHEO-02/')">
-                <i class="fas fa-comment-dots mr-3 w-5 text-center"></i>5. Đánh giá chéo                
+            <button class="tab-btn" onclick="openTab(this, 'https://tuan-23880095.github.io/KNLVN-DANHGIACHEO-02/')">
+                <i class="fas fa-comment-dots mr-3 w-5 text-center"></i>6. Đánh giá chéo                
             </button>
             <button class="tab-btn" onclick="openTab(this, 'dondepToDoList.html')">
-                <i class="fas fa-gears mr-3 w-5 text-center"></i>6. Dọn dẹp To-Do list
+                <i class="fas fa-gears mr-3 w-5 text-center"></i>7. Dọn dẹp To-Do list
+            </button>
+            <button class="tab-btn" onclick="openTab(this, 'https://tuan-23880095.github.io/khamphabanthan/')">
+                <i class="fas fa-draw-polygon mr-3 w-5 text-center"></i>8. Đánh giá bản thân
             </button>
             <button class="tab-btn" onclick="openTab(this, 'mucdocanbang.html')">
-                <i class="fas fa-scale-balanced mr-3 w-5 text-center"></i>7. Kiểm tra mức độ cân bằng của bản thân
+                <i class="fas fa-scale-balanced mr-3 w-5 text-center"></i>9. Kiểm tra mức độ cân bằng
             </button>
-            <button class="tab-btn active" onclick="openTab(this, 'https://tuan-23880095.github.io/khamphabanthan/')">
-                <i class="fas fa-draw-polygon mr-3 w-5 text-center"></i>8. Đánh bản thân
-            </button>
-            <button class="tab-btn" onclick="openTab(this, 'mucdocanbang.html')">
-                <i class="fas fa-scale-balanced mr-3 w-5 text-center"></i>9. Kiểm tra mức độ cân bằng của bản thân
-            </button>
-
         </div>
 
         <!-- Khung hiển thị nội dung web con (Iframe) -->
-        <div class="flex-1 bg-white relative">
-            <iframe id="mainFrame" src="noidung01.html" class="w-full h-full border-none"></iframe>
+        <div class="flex flex-col flex-1 bg-white relative w-full">
+            <!-- Nút mở Menu dành riêng cho Mobile -->
+            <div class="md:hidden bg-hcmus text-white p-2 flex justify-between items-center shadow-md z-10">
+                <span class="font-bold text-sm ml-2"><i class="fas fa-book-reader mr-2"></i>Nội dung bài học</span>
+                <button onclick="toggleSidebar()" class="p-2 bg-blue-800 rounded hover:bg-blue-700 focus:outline-none">
+                    <i class="fas fa-bars"></i> Danh mục
+                </button>
+            </div>
+
+            <!-- Iframe chứa nội dung -->
+            <iframe id="mainFrame" src="noidung01.html" class="flex-1 w-full border-none"></iframe>
         </div>
 
     </div>
 
-    <!-- FOOTER: Bản quyền và thông tin -->
-    <footer class="bg-white border-t border-gray-200 shrink-0 z-10">
-        <div class="text-center text-gray-500 text-xs py-3">
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200 shrink-0 z-20 relative">
+        <div class="text-center text-gray-500 text-xs py-3 px-2">
             &copy; Người phát triển web ThS.Đinh Quốc Tuấn - 2026 Khoa Địa Chất - Trường Đại học Khoa học tự nhiên, ĐHQG-HCM
         </div>
     </footer>
 
-    <!-- Script xử lý việc chuyển đổi tab -->
+    <!-- Script xử lý -->
     <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            // Bật/tắt class -translate-x-full để trượt menu ra/vào
+            sidebar.classList.toggle('-translate-x-full');
+            // Bật/tắt màn hình mờ
+            overlay.classList.toggle('hidden');
+        }
+
         function openTab(btnElement, url) {
             // 1. Đổi nguồn iframe sang trang mới
             document.getElementById('mainFrame').src = url;
@@ -135,6 +158,11 @@
 
             // 3. Đánh dấu nút đang được chọn
             btnElement.classList.add("active");
+
+            // 4. Nếu đang xem trên Mobile (kích thước < 768px), tự động đóng menu sau khi bấm chọn
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
         }
     </script>
 </body>
