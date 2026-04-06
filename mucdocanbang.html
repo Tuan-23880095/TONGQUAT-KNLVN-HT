@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Mức Độ Cân Bằng Của Bạn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .question-option {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .question-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 22px;
+            width: 22px;
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+        }
+        .question-option:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+        .question-option input:checked ~ .checkmark {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .question-option input:checked ~ .checkmark:after {
+            display: block;
+        }
+        .question-option .checkmark:after {
+            top: 7px;
+            left: 7px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+        /* Custom result styles */
+        .result-box {
+            transition: all 0.3s ease-in-out;
+            transform: translateY(10px);
+            opacity: 0;
+        }
+        .result-box.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .result-a { background-color: #dcfce7; border-color: #4ade80; color: #166534; }
+        .result-b { background-color: #fef9c3; border-color: #facc15; color: #713f12; }
+        .result-c { background-color: #ffe4e6; border-color: #f87171; color: #991b1b; }
+        .result-d { background-color: #f3e8ff; border-color: #c084fc; color: #581c87; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl mx-auto p-6 sm:p-8 rounded-2xl shadow-xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-2">
+            Quiz: Mức Độ Cân Bằng Của Bạn
+        </h1>
+        <p class="text-center text-gray-600 mb-8">
+            Hãy chọn câu trả lời mô tả đúng nhất về bạn trong 1-2 tuần qua.
+        </p>
+
+        <form id="quizForm">
+            <!-- Câu hỏi 1 -->
+            <div class="mb-6">
+                <p class="text-lg font-semibold text-gray-700 mb-3">1. Bạn thường bắt đầu ngày làm việc/học tập của mình như thế nào?</p>
+                <label class="question-option">Tôi có kế hoạch rõ ràng và bắt đầu với việc quan trọng nhất.
+                    <input type="radio" name="q1" value="1" required>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Tôi xem qua danh sách việc cần làm, nhưng thường bị cuốn vào email/tin nhắn trước.
+                    <input type="radio" name="q1" value="2">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Tôi "lao" vào làm việc gấp nhất (thường là việc của hôm qua chưa xong).
+                    <input type="radio" name="q1" value="3">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Tôi không biết bắt đầu từ đâu, mọi thứ đều có vẻ khẩn cấp.
+                    <input type="radio" name="q1" value="4">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <!-- Câu hỏi 2 -->
+            <div class="mb-6">
+                <p class="text-lg font-semibold text-gray-700 mb-3">2. "Deadline" (thời hạn) đối với bạn là...</p>
+                <label class="question-option">Là mục tiêu để tôi hoàn thành công việc trước đó vài ngày.
+                    <input type="radio" name="q2" value="1" required>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Tôi thường hoàn thành đúng hạn, đôi khi hơi sát giờ.
+                    <input type="radio" name="q2" value="2">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Tôi thường xuyên phải "chạy deadline", nộp bài/công việc vào phút chót.
+                    <input type="radio" name="q2" value="3">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Tôi thường xuyên trễ deadline hoặc phải xin gia hạn.
+                    <input type="radio" name="q2" value="4">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <!-- Câu hỏi 3 -->
+            <div class="mb-6">
+                <p class="text-lg font-semibold text-gray-700 mb-3">3. Bạn xử lý các công việc phát sinh đột xuất như thế nào?</p>
+                <label class="question-option">Tôi bình tĩnh đánh giá và sắp xếp nó vào lịch trình một cách hợp lý.
+                    <input type="radio" name="q3" value="1" required>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Hơi bối rối một chút, nhưng tôi có thể điều chỉnh lại kế hoạch trong ngày.
+                    <input type="radio" name="q3" value="2">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Việc này làm tôi căng thẳng và thường phải "hy sinh" việc khác để làm nó.
+                    <input type="radio" name="q3" value="3">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Một việc phát sinh có thể làm hỏng kế hoạch của cả ngày (hoặc cả tuần).
+                    <input type="radio" name="q3" value="4">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <!-- Câu hỏi 4 -->
+            <div class="mb-6">
+                <p class="text-lg font-semibold text-gray-700 mb-3">4. Bạn cảm thấy thế nào vào cuối ngày?</p>
+                <label class="question-option">Hài lòng, hoàn thành tốt các mục tiêu và sẵn sàng nghỉ ngơi.
+                    <input type="radio" name="q4" value="1" required>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Cũng ổn, làm được khá nhiều việc dù vẫn còn vài thứ tồn đọng.
+                    <input type="radio" name="q4" value="2">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Mệt mỏi, cảm giác như mình "chạy" cả ngày mà việc vẫn chưa xong.
+                    <input type="radio" name="q4" value="3">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Kiệt sức và lo lắng về khối lượng công việc cho ngày mai.
+                    <input type="radio" name="q4" value="4">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <!-- Câu hỏi 5 -->
+            <div class="mb-6">
+                <p class="text-lg font-semibold text-gray-700 mb-3">5. Bạn có thường xuyên cảm thấy quá tải (overwhelmed) không?</p>
+                <label class="question-option">Rất hiếm khi. Tôi biết giới hạn của mình và quản lý tốt kỳ vọng.
+                    <input type="radio" name="q5" value="1" required>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Thỉnh thoảng, vào những đợt cao điểm, nhưng tôi biết cách xử lý nó.
+                    <input type="radio" name="q5" value="2">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Khá thường xuyên. Tôi hay cảm thấy có quá nhiều thứ phải làm.
+                    <input type="radio" name="q5" value="3">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="question-option">Hầu như mỗi ngày. Tôi cảm thấy như mình đang "chìm" trong công việc.
+                    <input type="radio" name="q5" value="4">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <!-- Nút Submit -->
+            <div class="text-center mt-8">
+                <button type="submit" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                    Xem Kết Quả
+                </button>
+            </div>
+            
+            <!-- Thông báo lỗi -->
+            <div id="error-message" class="hidden text-center text-red-600 font-medium mt-4">
+                Vui lòng trả lời tất cả câu hỏi!
+            </div>
+        </form>
+
+        <!-- Khu vực kết quả -->
+        <div id="result" class="result-box hidden mt-8 p-6 border-l-4 rounded-lg">
+            <h2 id="result-category" class="text-2xl font-bold mb-2"></h2>
+            <p id="result-text" class="text-lg"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('quizForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const numQuestions = 5;
+            let totalScore = 0;
+            let allAnswered = true;
+            const errorMessage = document.getElementById('error-message');
+            const resultDiv = document.getElementById('result');
+
+            // Tính điểm
+            for (let i = 1; i <= numQuestions; i++) {
+                const selected = document.querySelector('input[name="q' + i + '"]:checked');
+                if (selected) {
+                    totalScore += parseInt(selected.value);
+                } else {
+                    allAnswered = false;
+                }
+            }
+
+            // Hiển thị lỗi nếu chưa trả lời hết
+            if (!allAnswered) {
+                errorMessage.classList.remove('hidden');
+                resultDiv.classList.add('hidden');
+                resultDiv.classList.remove('show');
+                return;
+            }
+
+            // Ẩn lỗi và hiển thị kết quả
+            errorMessage.classList.add('hidden');
+            
+            let category = '';
+            let description = '';
+            let styleClass = '';
+
+            // Xác định nhóm dựa trên điểm
+            // Min: 5 (1*5)
+            // Max: 20 (4*5)
+            if (totalScore <= 7) {
+                // 5-7 điểm
+                category = 'Nhóm A: Rất cân bằng';
+                description = 'Chúc mừng! Bạn kiểm soát mọi thứ rất tốt, có kế hoạch rõ ràng và biết cách ưu tiên công việc. Bạn là hình mẫu của sự hiệu quả!';
+                styleClass = 'result-a';
+            } else if (totalScore <= 11) {
+                // 8-11 điểm
+                category = 'Nhóm B: Tạm ổn';
+                description = 'Bạn quản lý khá tốt, dù đôi lúc hơi rối. Bạn vẫn hoàn thành công việc, nhưng có thể cải thiện thêm về việc lập kế hoạch và xử lý việc phát sinh để giảm căng thẳng.';
+                styleClass = 'result-b';
+            } else if (totalScore <= 15) {
+                // 12-15 điểm
+                category = 'Nhóm C: Hơi hỗn loạn';
+                description = 'Bạn thường xuyên phải "chạy deadline" và cảm thấy mệt mỏi. Công việc dường như đang kiểm soát bạn. Đã đến lúc xem xét lại cách bạn sắp xếp thứ tự ưu tiên và nói "không" với những việc không cần thiết.';
+                styleClass = 'result-c';
+            } else {
+                // 16-20 điểm
+                category = 'Nhóm D: Hoàn toàn mất kiểm soát';
+                description = 'Bạn đang... "chìm" thực sự. Cảm giác quá tải diễn ra liên tục và bạn không biết bắt đầu từ đâu. Bạn đang cần sự giúp đỡ và một kế hoạch "tái thiết" lại toàn bộ hệ thống làm việc của mình ngay lập tức.';
+                styleClass = 'result-d';
+            }
+
+            // Cập nhật nội dung và style
+            document.getElementById('result-category').innerText = category;
+            document.getElementById('result-text').innerText = description;
+            
+            // Xóa các class cũ và thêm class mới
+            resultDiv.className = 'result-box mt-8 p-6 border-l-4 rounded-lg'; // Reset
+            resultDiv.classList.add(styleClass, 'show');
+            
+            // Cuộn xuống để xem kết quả
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        });
+    </script>
+</body>
+</html>
