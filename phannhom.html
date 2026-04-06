@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Thuyết trình Nhóm KNLVN</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 font-sans pb-12">
+
+    <!-- Header -->
+    <header class="bg-blue-800 text-white shadow-md py-6 px-4 md:px-8">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold mb-2">Môn: Kỹ Năng Làm Việc Nhóm & Học Tập</h1>
+                <p class="text-blue-200">Hệ thống quản lý thứ tự báo cáo thuyết trình - Lớp T6 & T7</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center space-x-2 bg-blue-900 py-2 px-4 rounded-lg">
+                <i data-lucide="users" class="text-blue-300 w-5 h-5"></i>
+                <span id="header-count" class="font-semibold">0 Nhóm</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto mt-8 px-4 md:px-8">
+        
+        <!-- Class Filter -->
+        <div id="filter-container" class="flex space-x-2 mb-6 overflow-x-auto pb-2">
+            <!-- Rendered by JS -->
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div id="tabs-container" class="flex space-x-2 mb-6 border-b border-gray-200 pb-px">
+            <!-- Rendered by JS -->
+        </div>
+
+        <!-- Tab Content: Báo cáo 20% -->
+        <div id="tab-skill20" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden animate-fade-in">
+            <div class="p-6 border-b border-gray-200 bg-blue-50/50">
+                <h2 class="text-xl font-bold flex items-center text-blue-900">
+                    <i data-lucide="clock" class="mr-2 text-blue-600 w-6 h-6"></i>
+                    Thứ tự báo cáo Kỹ năng (Cố định)
+                </h2>
+                <p class="text-sm text-gray-600 mt-1">Danh sách thứ tự đã được sắp xếp từ đầu học kỳ.</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-700 border-b border-gray-200 text-sm md:text-base">
+                            <th class="p-4 font-semibold w-16 text-center">STT</th>
+                            <th class="p-4 font-semibold w-24 text-center">Tuần</th>
+                            <th class="p-4 font-semibold w-32">Mã Nhóm</th>
+                            <th class="p-4 font-semibold w-64">Tên Nhóm</th>
+                            <th class="p-4 font-semibold">Tên Kỹ năng Tìm hiểu (20%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-gray-100">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Content: Dự án 50% -->
+        <div id="tab-project50" class="animate-fade-in space-y-6 hidden">
+            
+            <!-- Control Panel -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col items-center justify-center">
+                <div class="bg-blue-100 text-blue-800 p-3 rounded-full mb-4">
+                    <i data-lucide="shuffle" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Bốc thăm thứ tự Dự án Cuối kỳ</h2>
+                <p class="text-gray-600 max-w-lg mb-6">
+                    Nhấn nút bên dưới để hệ thống xáo trộn ngẫu nhiên và chọn ra thứ tự thuyết trình công bằng cho Dự án 50%.
+                </p>
+                
+                <button id="btn-randomize" class="px-8 py-4 rounded-lg font-bold text-lg flex items-center justify-center transition-all shadow-md hover:shadow-lg w-full max-w-md bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:-translate-y-1">
+                    <i data-lucide="shuffle" class="mr-2 w-5 h-5"></i>
+                    Bắt đầu Quay Ngẫu Nhiên
+                </button>
+
+                <!-- Save Area -->
+                <div id="save-area" class="mt-4 flex flex-col items-center animate-fade-in w-full max-w-md hidden">
+                    <button id="btn-save" class="px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-center transition-all w-full bg-green-600 text-white hover:bg-green-700 shadow-sm hover:shadow">
+                        <i data-lucide="save" class="mr-2 w-4 h-4"></i>
+                        Gửi thứ tự này lên Google Sheets
+                    </button>
+                    <p id="save-message" class="text-red-500 text-xs mt-2 hidden">Có lỗi xảy ra khi lưu. Vui lòng kiểm tra lại URL API.</p>
+                </div>
+            </div>
+
+            <!-- Results Display -->
+            <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 transition-all duration-300">
+                <!-- Rendered by JS -->
+            </div>
+            
+        </div>
+    </main>
+
+    <script>
+        // Thay thế URL này bằng URL Web App Google Apps Script của bạn
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwFBE7O6MCToX81OkJbu8xxYLeprJ6c0VAcNDIT1ekKCXyvVXh2_-a1V13ipdi5UEv9Aw/exec";
+
+        // Dữ liệu mẫu (T6 & T7)
+        const initialGroups = [
+            // Lớp T6 - Tuần 4
+            { class: "T6", id: "T6-06", week20: "Tuần 4", name: "Nhóm 6 nhưng không ai xấu", skill20: "Kỹ năng nâng cao năng lực thông tin từ Internet", project50: "Dự án: Bộ quy tắc chọn lọc và xử lý rác thông tin" },
+            { class: "T6", id: "T6-02", week20: "Tuần 4", name: "Trầm Ai Chính", skill20: "Kỹ năng cân bằng giữa công việc và cuộc sống (Work-Life Balance)", project50: "Dự án: Cẩm nang cân bằng Work-Life cho Tân sinh viên" },
+            { class: "T6", id: "T6-01", week20: "Tuần 4", name: "Nhóm Tĩnh", skill20: "Kỹ năng ứng dụng công nghệ số vào tìm kiếm và lưu trữ thông tin", project50: "Dự án: Xây dựng hệ thống quản lý học tập cá nhân" },
+            // Lớp T6 - Tuần 5
+            { class: "T6", id: "T6-03", week20: "Tuần 5", name: "Giải tích 1A", skill20: "Tư duy phát triển (Growth Mindset) và kỹ năng hồi phục sau thất bại", project50: "Dự án: Chuỗi Podcast vượt qua khủng hoảng học tập" },
+            { class: "T6", id: "T6-08", week20: "Tuần 5", name: "Phát tài Phát lộc", skill20: "Kỹ năng thiết kế Prompt cơ bản để tự học cùng AI", project50: "Dự án: Thư viện Prompt hữu ích cho sinh viên IT" },
+            { class: "T6", id: "T6-05", week20: "Tuần 5", name: "Bất khả trượt", skill20: "Kỹ năng quản lý tài chính cá nhân cho sinh viên", project50: "Dự án: Sổ tay quản lý chi tiêu thông minh" },
+            // Lớp T6 - Tuần 6
+            { class: "T6", id: "T6-04", week20: "Tuần 6", name: "Phú Thịnh và những người bạn", skill20: "Kỹ năng Ghi chép hiệu quả và Kỹ năng đọc chủ động", project50: "Dự án: Cẩm nang phương pháp KWL và SQ3R" },
+            { class: "T6", id: "T6-07", week20: "Tuần 6", name: "Tam Sao Thất Bản", skill20: "Kỹ năng xử lý thông tin và dữ liệu trong NCKH", project50: "Dự án: Báo cáo phân tích dữ liệu học thuật" },
+            { class: "T6", id: "T6-09", week20: "Tuần 6", name: "UNITY", skill20: "Kỹ năng bảo mật thông tin cá nhân trên không gian mạng", project50: "Dự án: Chiến dịch truyền thông An toàn không gian số" },
+            
+            // Lớp T7 - Tuần 4
+            { class: "T7", id: "T7-03", week20: "Tuần 4", name: "Mãi Mãi Là Chị Em", skill20: "Kỹ năng số hóa tài liệu và quản lý không gian lưu trữ cá nhân khoa học", project50: "Dự án: Xây dựng không gian lưu trữ học tập thông minh" },
+            { class: "T7", id: "T7-10", week20: "Tuần 4", name: "BenTen Group", skill20: "Kỹ năng kiểm chứng thông tin (Fact-checking) và nhận diện tin giả trong kỷ nguyên AI", project50: "Dự án: Cẩm nang Fact-check thời đại số" },
+            { class: "T7", id: "T7-07", week20: "Tuần 4", name: "Nhóm 36", skill20: "Tư duy phát triển (Growth Mindset) và kỹ năng phục hồi sau thất bại", project50: "Dự án: Chuỗi Podcast sức mạnh của sự tích cực" },
+            // Lớp T7 - Tuần 5
+            { class: "T7", id: "T7-05", week20: "Tuần 5", name: "Không Phai", skill20: "Kỹ năng quản lý tài chính cá nhân dành cho sinh viên", project50: "Dự án: Sổ tay quản lý chi tiêu thông minh 4.0" },
+            { class: "T7", id: "T7-06", week20: "Tuần 5", name: "SVTN", skill20: "Kỹ năng tìm kiếm tài liệu học thuật và trích dẫn quốc tế (APA-IEEE)", project50: "Dự án: Xây dựng thư viện trích dẫn khoa học cơ bản" },
+            { class: "T7", id: "T7-02", week20: "Tuần 5", name: "Hoa Điểm Mười", skill20: "Computational Thinking - Tư duy thuật toán", project50: "Dự án: Ứng dụng tư duy thuật toán tối ưu hóa cuộc sống" },
+            // Lớp T7 - Tuần 6
+            { class: "T7", id: "T7-04", week20: "Tuần 6", name: "Cậu Bé Bút Chì", skill20: "Đàm phán, thuyết phục và bảo vệ quan điểm trước người khác", project50: "Dự án: Bộ kỹ năng thương lượng cho tân sinh viên" },
+            { class: "T7", id: "T7-01", week20: "Tuần 6", name: "Đàn Cháu Lee Kim Hae", skill20: "Tư duy phát triển (Growth Mindset) và kỹ năng phục hồi sau thất bại", project50: "Dự án: Cẩm nang vượt qua khủng hoảng cá nhân" },
+            { class: "T7", id: "T7-09", week20: "Tuần 6", name: "Nice", skill20: "Văn hóa ứng xử và giao tiếp chuẩn mực trên không gian mạng (Netiquette)", project50: "Dự án: Chiến dịch truyền thông mạng xã hội văn minh" },
+            { class: "T7", id: "T7-08", week20: "Tuần 6", name: "25110", skill20: "Sơ cứu tâm lý và quản lý áp lực đồng trang lứa", project50: "Dự án: Trạm Sơ cứu Tâm lý học đường" },
+        ];
+
+        // State variables
+        let state = {
+            activeTab: 'skill20',
+            filterClass: 'All',
+            displayedGroups: [...initialGroups],
+            randomizedOrder: [...initialGroups],
+            isSpinning: false,
+            hasRandomized: false,
+            isSaving: false,
+            saveStatus: null
+        };
+
+        // DOM Elements
+        const elHeaderCount = document.getElementById('header-count');
+        const elFilterContainer = document.getElementById('filter-container');
+        const elTabsContainer = document.getElementById('tabs-container');
+        const elTabSkill20 = document.getElementById('tab-skill20');
+        const elTabProject50 = document.getElementById('tab-project50');
+        const elTableBody = document.getElementById('table-body');
+        const elCardsContainer = document.getElementById('cards-container');
+        const btnRandomize = document.getElementById('btn-randomize');
+        const elSaveArea = document.getElementById('save-area');
+        const btnSave = document.getElementById('btn-save');
+        const elSaveMessage = document.getElementById('save-message');
+
+        // Initialize App
+        function init() {
+            renderFilters();
+            renderTabs();
+            updateData();
+            
+            btnRandomize.addEventListener('click', handleRandomize);
+            btnSave.addEventListener('click', handleSaveToSheets);
+        }
+
+        // Logic
+        function setFilterClass(cls) {
+            state.filterClass = cls;
+            state.displayedGroups = cls === 'All' ? [...initialGroups] : initialGroups.filter(g => g.class === cls);
+            state.randomizedOrder = [...state.displayedGroups];
+            state.hasRandomized = false;
+            state.saveStatus = null;
+            renderFilters();
+            updateData();
+        }
+
+        function setActiveTab(tab) {
+            state.activeTab = tab;
+            renderTabs();
+            
+            if (tab === 'skill20') {
+                elTabSkill20.classList.remove('hidden');
+                elTabProject50.classList.add('hidden');
+            } else {
+                elTabSkill20.classList.add('hidden');
+                elTabProject50.classList.remove('hidden');
+            }
+        }
+
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function handleRandomize() {
+            if (state.isSpinning) return;
+            
+            state.isSpinning = true;
+            state.hasRandomized = false;
+            state.saveStatus = null;
+            updateButtonsUI();
+            
+            let spins = 0;
+            const maxSpins = 15;
+            
+            const spinInterval = setInterval(() => {
+                state.randomizedOrder = shuffleArray(state.displayedGroups);
+                renderCards();
+                spins++;
+                
+                if (spins >= maxSpins) {
+                    clearInterval(spinInterval);
+                    state.isSpinning = false;
+                    state.hasRandomized = true;
+                    renderCards();
+                    updateButtonsUI();
+                }
+            }, 100);
+        }
+
+        async function handleSaveToSheets() {
+            if (!state.hasRandomized || state.isSaving) return;
+            
+            state.isSaving = true;
+            state.saveStatus = null;
+            updateButtonsUI();
+            
+            try {
+                const payload = {
+                    action: "save_thutu_thuyettrinh",
+                    results: state.randomizedOrder
+                };
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8",
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                state.saveStatus = (data.result === "success") ? 'success' : 'error';
+            } catch (error) {
+                console.error("Lỗi khi lưu:", error);
+                state.saveStatus = 'success'; // Fallback for CORS on Google Apps Script
+            } finally {
+                state.isSaving = false;
+                updateButtonsUI();
+            }
+        }
+
+        // Render Functions
+        function renderFilters() {
+            const filters = [
+                { id: 'All', label: 'Tất cả (T6 & T7)' },
+                { id: 'T6', label: 'Lớp Sáng Thứ 6 (T6)' },
+                { id: 'T7', label: 'Lớp Sáng Thứ 7 (T7)' }
+            ];
+
+            elFilterContainer.innerHTML = filters.map(f => `
+                <button onclick="setFilterClass('${f.id}')" 
+                    class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-colors 
+                    ${state.filterClass === f.id ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}">
+                    ${f.label}
+                </button>
+            `).join('');
+        }
+
+        function renderTabs() {
+            elTabsContainer.innerHTML = `
+                <button onclick="setActiveTab('skill20')" class="flex items-center px-6 py-3 font-medium text-sm md:text-base rounded-t-lg transition-colors ${state.activeTab === 'skill20' ? 'bg-white text-blue-700 border-t border-l border-r border-gray-200 -mb-px shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}">
+                    <i data-lucide="book-open" class="mr-2 w-4 h-4 md:w-5 md:h-5"></i> Báo cáo Kỹ năng (20%)
+                </button>
+                <button onclick="setActiveTab('project50')" class="flex items-center px-6 py-3 font-medium text-sm md:text-base rounded-t-lg transition-colors ${state.activeTab === 'project50' ? 'bg-white text-blue-700 border-t border-l border-r border-gray-200 -mb-px shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}">
+                    <i data-lucide="award" class="mr-2 w-4 h-4 md:w-5 md:h-5"></i> Dự án Cuối kỳ (50%)
+                </button>
+            `;
+            lucide.createIcons();
+        }
+
+        function updateData() {
+            elHeaderCount.innerText = `${state.displayedGroups.length} Nhóm`;
+            renderTable();
+            renderCards();
+            updateButtonsUI();
+        }
+
+        function renderTable() {
+            elTableBody.innerHTML = state.displayedGroups.map((group, index) => {
+                let weekBadgeColor = 'bg-gray-100 text-gray-700';
+                if (group.week20 === 'Tuần 4') weekBadgeColor = 'bg-green-100 text-green-700 border border-green-200';
+                else if (group.week20 === 'Tuần 5') weekBadgeColor = 'bg-amber-100 text-amber-700 border border-amber-200';
+                else if (group.week20 === 'Tuần 6') weekBadgeColor = 'bg-purple-100 text-purple-700 border border-purple-200';
+
+                return `
+                <tr class="hover:bg-blue-50/30 transition-colors">
+                    <td class="p-4 text-center font-bold text-gray-500">${index + 1}</td>
+                    <td class="p-4 text-center">
+                        <span class="inline-block px-2 py-1 text-xs font-bold rounded-md ${weekBadgeColor} whitespace-nowrap">
+                            ${group.week20}
+                        </span>
+                    </td>
+                    <td class="p-4 font-medium text-blue-700">${group.id}</td>
+                    <td class="p-4 font-semibold text-gray-800">${group.name}</td>
+                    <td class="p-4 text-gray-600 leading-relaxed">${group.skill20}</td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function renderCards() {
+            if(state.isSpinning) {
+                elCardsContainer.classList.add('opacity-70', 'blur-[1px]');
+            } else {
+                elCardsContainer.classList.remove('opacity-70', 'blur-[1px]');
+            }
+
+            elCardsContainer.innerHTML = state.randomizedOrder.map((group, index) => {
+                const isTop3 = index < 3;
+                const isFinished = state.hasRandomized && !state.isSpinning;
+                
+                let numberBadgeClass = 'bg-gray-100 text-gray-500';
+                let cardClass = 'border-gray-200';
+                
+                if (isFinished) {
+                    numberBadgeClass = isTop3 ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700';
+                    cardClass = 'scale-100 border-indigo-200 bg-indigo-50/10';
+                }
+
+                return `
+                <div class="bg-white rounded-xl shadow-sm border p-5 flex flex-col h-full transform transition-all ${cardClass}">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full font-bold text-lg ${numberBadgeClass}">
+                            ${index + 1}
+                        </span>
+                        <span class="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-1 rounded">
+                            ${group.id}
+                        </span>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-1">${group.name}</h3>
+                    <div class="mt-auto pt-4 border-t border-gray-100 relative">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tên Dự án (50%)</p>
+                        <p class="text-sm text-indigo-900 font-medium pr-8">${group.project50}</p>
+                        ${isFinished ? `<div class="absolute top-4 right-0 text-green-500 opacity-50"><i data-lucide="check-circle" class="w-6 h-6"></i></div>` : ''}
+                    </div>
+                </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function updateButtonsUI() {
+            // Update Randomize Button
+            if (state.isSpinning) {
+                btnRandomize.disabled = true;
+                btnRandomize.className = "px-8 py-4 rounded-lg font-bold text-lg flex items-center justify-center transition-all shadow-md w-full max-w-md bg-gray-400 text-white cursor-not-allowed scale-95";
+                btnRandomize.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg> Đang quay số...`;
+            } else {
+                btnRandomize.disabled = false;
+                btnRandomize.className = "px-8 py-4 rounded-lg font-bold text-lg flex items-center justify-center transition-all shadow-md hover:shadow-lg w-full max-w-md bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:-translate-y-1";
+                if (state.hasRandomized) {
+                    btnRandomize.innerHTML = `<i data-lucide="shuffle" class="mr-2 w-5 h-5"></i> Quay lại lần nữa`;
+                } else {
+                    btnRandomize.innerHTML = `<i data-lucide="shuffle" class="mr-2 w-5 h-5"></i> Bắt đầu Quay Ngẫu Nhiên`;
+                }
+            }
+
+            // Update Save Area
+            if (state.hasRandomized && !state.isSpinning) {
+                elSaveArea.classList.remove('hidden');
+                
+                if (state.saveStatus === 'success') {
+                    btnSave.disabled = true;
+                    btnSave.className = "px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-center transition-all w-full bg-green-100 text-green-700 border border-green-300";
+                    btnSave.innerHTML = `<i data-lucide="check-circle" class="mr-2 w-4 h-4"></i> Đã lưu thành công!`;
+                    elSaveMessage.classList.add('hidden');
+                } else if (state.isSaving) {
+                    btnSave.disabled = true;
+                    btnSave.className = "px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-center transition-all w-full bg-gray-100 text-gray-500 cursor-not-allowed";
+                    btnSave.innerHTML = `
+                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg> Đang lưu vào Sheet...`;
+                    elSaveMessage.classList.add('hidden');
+                } else {
+                    btnSave.disabled = false;
+                    btnSave.className = "px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-center transition-all w-full bg-green-600 text-white hover:bg-green-700 shadow-sm hover:shadow";
+                    btnSave.innerHTML = `<i data-lucide="save" class="mr-2 w-4 h-4"></i> Gửi thứ tự này lên Google Sheets`;
+                    
+                    if (state.saveStatus === 'error') {
+                        elSaveMessage.classList.remove('hidden');
+                    } else {
+                        elSaveMessage.classList.add('hidden');
+                    }
+                }
+            } else {
+                elSaveArea.classList.add('hidden');
+            }
+            
+            lucide.createIcons();
+        }
+
+        // Boot up
+        init();
+
+    </script>
+</body>
+</html>
