@@ -10,7 +10,7 @@
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             height: 100vh; 
-            overflow: hidden; /* Chống cuộn trang tổng, chỉ cuộn iframe */
+            overflow: hidden; /* Chống cuộn trang tổng, chỉ cuộn phần nội dung bên trong iframe */
         }
         /* Cột Menu bên trái */
         .sidebar { 
@@ -42,7 +42,7 @@
             background-color: #34495e; 
             border-left: 4px solid #3498db; 
         }
-        /* Khu vực hiển thị nội dung */
+        /* Khu vực hiển thị nội dung bên phải */
         .content { 
             flex-grow: 1; 
             background-color: #ecf0f1; 
@@ -59,31 +59,30 @@
     <!-- Khung Menu -->
     <div class="sidebar">
         <h2>Menu Môn Học</h2>
-        <!-- Thay thế các URL dưới đây bằng URL trang web thực tế của thầy -->
-        <button class="tab-btn active" onclick="openTab(this, 'https://vi.wikipedia.org/wiki/K%E1%BB%B9_n%C3%A2ng_m%E1%BB%81m')">1. Tổng quan môn học</button>
-        <button class="tab-btn" onclick="openTab(this, 'URL_TRANG_CUA_THAY_2')">2. Đánh giá nhóm (Rubric)</button>
-        <button class="tab-btn" onclick="openTab(this, 'URL_TRANG_CUA_THAY_3')">3. Bài tập Flashcard</button>
-        <button class="tab-btn" onclick="openTab(this, 'URL_TRANG_CUA_THAY_4')">4. Bảng phân công nhiệm vụ</button>
+        <button class="tab-btn active" onclick="openTab(this, 'noidung01.html')">1. Tổng quan môn học</button>
+        <button class="tab-btn" onclick="openTab(this, 'noidung02.html')">2. Đánh giá nhóm (Rubric)</button>
+        <button class="tab-btn" onclick="openTab(this, 'noidung03.html')">3. Bài tập Flashcard</button>
+        <button class="tab-btn" onclick="openTab(this, 'noidung04.html')">4. Bảng phân công nhiệm vụ</button>
     </div>
 
     <!-- Khung hiển thị nội dung trang web con -->
     <div class="content">
-        <!-- Đặt src mặc định là trang đầu tiên thầy muốn sinh viên thấy -->
-        <iframe id="mainFrame" src="https://vi.wikipedia.org/wiki/K%E1%BB%B9_n%C3%A2ng_m%E1%BB%81m"></iframe>
+        <!-- Đặt src mặc định là file đầu tiên hiển thị khi mở trang web -->
+        <iframe id="mainFrame" src="noidung01.html"></iframe>
     </div>
 
     <script>
         function openTab(btnElement, url) {
-            // 1. Đổi đường dẫn của iframe thành url mới
+            // 1. Đổi đường dẫn của iframe thành file html mới
             document.getElementById('mainFrame').src = url;
 
-            // 2. Xóa trạng thái 'active' của tất cả các nút
+            // 2. Xóa trạng thái 'active' của tất cả các nút trong menu
             var buttons = document.getElementsByClassName("tab-btn");
             for (var i = 0; i < buttons.length; i++) {
                 buttons[i].classList.remove("active");
             }
 
-            // 3. Đánh dấu nút vừa được click là 'active' (để đổi màu nhận diện)
+            // 3. Đánh dấu nút vừa được click là 'active' (để hiện viền xanh nhận diện)
             btnElement.classList.add("active");
         }
     </script>
