@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hoạt động nhóm: Dọn dẹp To-Do List</title>
     <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,259 +11,196 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
+            /* Thêm padding dưới để không bị thanh task che mất nội dung trên mobile */
+            padding-bottom: 120px; 
+        }
+        @media (min-width: 768px) {
+            body { padding-bottom: 0; }
         }
         /* Tạo kiểu cho phần tử khi đang được kéo */
         .dragging {
-            opacity: 0.5;
+            opacity: 0.4;
             background: #fef9c3; /* yellow-100 */
-            border: 2px dashed #fde047; /* yellow-400 */
+            border: 2px dashed #eab308; /* yellow-500 */
         }
         .task-item {
-            touch-action: none;
+            touch-action: none; /* Ngăn trình duyệt cuộn khi chạm vào thẻ */
+            user-select: none; /* Tránh bôi đen chữ trên mobile */
+        }
+        
+        /* Ẩn thanh cuộn trên thanh task của mobile nhưng vẫn cuộn được */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body class="bg-gray-100 p-6 md:p-10">
+<body class="bg-gray-50 md:p-10 p-2">
 
     <div class="max-w-7xl mx-auto">
         <!-- Tiêu đề -->
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-blue-700 mb-2">Hoạt động nhóm: "Dọn dẹp To-Do List"</h1>
-            <p class="mt-4 text-sm text-gray-500"><strong>Hướng dẫn:</strong> Kéo và thả các "nhiệm vụ" từ danh sách bên dưới vào 4 góc ma trận bên trên.</p>
+        <header class="text-center mb-6 md:mb-8 mt-4 md:mt-0">
+            <h1 class="text-2xl md:text-4xl font-bold text-blue-700 mb-2">"Dọn dẹp To-Do List"</h1>
+            <p class="mt-2 text-xs md:text-sm text-gray-500 px-2"><strong>Hướng dẫn:</strong> Kéo và thả các "nhiệm vụ" bên dưới vào 4 góc ma trận.</p>
         </header>
 
         <!-- Khu vực chính: Danh sách nhiệm vụ và Ma trận -->
-        <main class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <main class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 relative">
 
-            <!-- Cột 1: Danh sách nhiệm vụ (order-2, md:order-1) -->
-            <!-- Trên mobile, nó sẽ ở order 2 (bên dưới) -->
-            <!-- Trên desktop, nó sẽ ở order 1 (bên trái) -->
-            <aside class="md:col-span-1 order-2 md:order-1 bg-white p-4 md:p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">Danh sách nhiệm vụ</h2>
-                <!-- 
-                  Mobile: flex, flex-row, overflow-x-auto, space-x-3, min-h-[120px]
-                  Desktop: md:flex-col, md:overflow-x-hidden, md:space-x-0, md:space-y-3, md:min-h-[300px]
-                -->
-                <div id="taskList" class="min-h-[120px] md:min-h-[300px] flex flex-row md:flex-col overflow-x-auto md:overflow-x-hidden md:overflow-y-auto space-x-3 md:space-x-0 md:space-y-3 p-2 md:p-0">
+            <!-- Cột 1: Danh sách nhiệm vụ (Mobile: Nổi ở dưới cùng / Desktop: Nằm bên trái) -->
+            <aside class="md:col-span-1 fixed bottom-0 left-0 right-0 z-50 md:relative md:z-auto bg-white/95 backdrop-blur shadow-[0_-4px_10px_rgba(0,0,0,0.1)] md:shadow-lg p-3 md:p-6 rounded-t-xl md:rounded-lg border-t border-gray-200 md:border-none transition-all">
+                <h2 class="text-sm md:text-2xl font-bold mb-2 md:mb-4 text-center text-gray-800">Vuốt & Kéo nhiệm vụ từ đây 👇</h2>
+                
+                <div id="taskList" class="no-scrollbar min-h-[60px] md:min-h-[300px] flex flex-row md:flex-col overflow-x-auto md:overflow-x-hidden md:overflow-y-auto space-x-2 md:space-x-0 md:space-y-3 pb-2 md:pb-0 items-center">
                     <!-- Các nhiệm vụ sẽ được thêm vào đây bằng JavaScript -->
                 </div>
             </aside>
 
-            <!-- Cột 2: Ma trận Eisenhower (order-1, md:order-2) -->
-            <!-- Trên mobile, nó sẽ ở order 1 (bên trên) -->
-            <!-- Trên desktop, nó sẽ ở order 2 (bên phải) -->
-            <section class="md:col-span-2 order-1 md:order-2">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Cột 2: Ma trận Eisenhower -->
+            <section class="md:col-span-2">
+                <!-- Lưới 2x2 trên CẢ Mobile và Desktop để dễ nhìn tổng quan -->
+                <div class="grid grid-cols-2 gap-2 md:gap-6">
                     
                     <!-- Góc 1: Quan trọng & Khẩn cấp -->
-                    <div id="q1" class="quadrant bg-red-100 border-2 border-red-300 rounded-lg p-5 min-h-[250px] md:min-h-[300px]" data-quadrant-name="q1">
-                        <h3 class="text-lg md:text-xl font-bold text-red-700 text-center mb-4">
+                    <div id="q1" class="quadrant bg-red-50 md:bg-red-100 border-2 border-red-300 rounded-lg p-2 md:p-5 min-h-[160px] md:min-h-[300px] flex flex-col" data-quadrant-name="q1">
+                        <h3 class="text-sm md:text-xl font-bold text-red-700 text-center mb-2 md:mb-4">
                             Góc 1: Làm ngay
-                            <span class="block text-xs md:text-sm font-normal text-red-600">(Quan trọng & Khẩn cấp)</span>
+                            <span class="block text-[10px] md:text-sm font-normal text-red-600">(Quan trọng & Khẩn cấp)</span>
                         </h3>
-                        <div class="dropzone space-y-2 min-h-[150px] md:min-h-[200px]"></div>
+                        <div class="dropzone space-y-2 flex-grow min-h-[100px] md:min-h-[200px] rounded"></div>
                     </div>
 
                     <!-- Góc 2: Quan trọng & Không khẩn cấp -->
-                    <div id="q2" class="quadrant bg-blue-100 border-2 border-blue-300 rounded-lg p-5 min-h-[250px] md:min-h-[300px]" data-quadrant-name="q2">
-                        <h3 class="text-lg md:text-xl font-bold text-blue-700 text-center mb-4">
+                    <div id="q2" class="quadrant bg-blue-50 md:bg-blue-100 border-2 border-blue-300 rounded-lg p-2 md:p-5 min-h-[160px] md:min-h-[300px] flex flex-col" data-quadrant-name="q2">
+                        <h3 class="text-sm md:text-xl font-bold text-blue-700 text-center mb-2 md:mb-4">
                             Góc 2: Lên lịch
-                            <span class="block text-xs md:text-sm font-normal text-blue-600">(Quan trọng & Không khẩn cấp)</span>
+                            <span class="block text-[10px] md:text-sm font-normal text-blue-600">(Quan trọng & Không khẩn cấp)</span>
                         </h3>
-                        <div class="dropzone space-y-2 min-h-[150px] md:min-h-[200px]"></div>
+                        <div class="dropzone space-y-2 flex-grow min-h-[100px] md:min-h-[200px] rounded"></div>
                     </div>
 
                     <!-- Góc 3: Không quan trọng & Khẩn cấp -->
-                    <div id="q3" class="quadrant bg-orange-100 border-2 border-orange-300 rounded-lg p-5 min-h-[250px] md:min-h-[300px]" data-quadrant-name="q3">
-                        <h3 class="text-lg md:text-xl font-bold text-orange-700 text-center mb-4">
+                    <div id="q3" class="quadrant bg-orange-50 md:bg-orange-100 border-2 border-orange-300 rounded-lg p-2 md:p-5 min-h-[160px] md:min-h-[300px] flex flex-col" data-quadrant-name="q3">
+                        <h3 class="text-sm md:text-xl font-bold text-orange-700 text-center mb-2 md:mb-4">
                             Góc 3: Ủy thác
-                            <span class="block text-xs md:text-sm font-normal text-orange-600">(Không quan trọng & Khẩn cấp)</span>
+                            <span class="block text-[10px] md:text-sm font-normal text-orange-600">(Không Q.trọng & Khẩn cấp)</span>
                         </h3>
-                        <div class="dropzone space-y-2 min-h-[150px] md:min-h-[200px]"></div>
+                        <div class="dropzone space-y-2 flex-grow min-h-[100px] md:min-h-[200px] rounded"></div>
                     </div>
 
                     <!-- Góc 4: Không quan trọng & Không khẩn cấp -->
-                    <div id="q4" class="quadrant bg-gray-200 border-2 border-gray-400 rounded-lg p-5 min-h-[250px] md:min-h-[300px]" data-quadrant-name="q4">
-                        <h3 class="text-lg md:text-xl font-bold text-gray-700 text-center mb-4">
+                    <div id="q4" class="quadrant bg-gray-100 md:bg-gray-200 border-2 border-gray-400 rounded-lg p-2 md:p-5 min-h-[160px] md:min-h-[300px] flex flex-col" data-quadrant-name="q4">
+                        <h3 class="text-sm md:text-xl font-bold text-gray-700 text-center mb-2 md:mb-4">
                             Góc 4: Xóa bỏ
-                            <span class="block text-xs md:text-sm font-normal text-gray-600">(Không quan trọng & Không khẩn cấp)</span>
+                            <span class="block text-[10px] md:text-sm font-normal text-gray-600">(Không Q.trọng & Không k.cấp)</span>
                         </h3>
-                        <div class="dropzone space-y-2 min-h-[150px] md:min-h-[200px]"></div>
+                        <div class="dropzone space-y-2 flex-grow min-h-[100px] md:min-h-[200px] rounded"></div>
                     </div>
 
                 </div>
             </section>
         </main>
 
-        <!-- ****** BẮT ĐẦU PHẦN MỚI ****** -->
-
         <!-- Phần Thảo luận & Lời khuyên -->
-        <section class="mt-10 max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-2xl md:text-3xl font-bold text-center text-indigo-700 mb-6">Thảo luận & Lời khuyên</h2>
-            
-            <p class="text-center text-base md:text-lg text-gray-700 mb-6">
-                Sau khi hoàn thành, hãy so sánh kết quả của nhóm bạn với các nhóm khác. Sẽ có những nhiệm vụ gây tranh rãi (ví dụ: "Đi xem phim với bạn mới", "Đi họp CLB").
+        <section class="mt-8 md:mt-10 max-w-5xl mx-auto bg-white p-4 md:p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl md:text-3xl font-bold text-center text-indigo-700 mb-4 md:mb-6">Thảo luận & Lời khuyên</h2>
+            <p class="text-center text-sm md:text-lg text-gray-700 mb-4">
+                Sau khi hoàn thành, hãy so sánh kết quả của nhóm bạn với các nhóm khác. Sẽ có những nhiệm vụ gây tranh cãi (ví dụ: "Đi xem phim với bạn mới", "Đi họp CLB").
             </p>
-            <p class="text-center text-lg md:text-xl font-semibold text-red-600 bg-red-50 p-4 rounded-md mb-8">
-                Đây là điểm mấu chốt: "Quan trọng" là thứ do BẠN định nghĩa, dựa trên mục tiêu dài hạn của bạn.
+            <p class="text-center text-sm md:text-xl font-semibold text-red-600 bg-red-50 p-3 rounded-md mb-6">
+                Điểm mấu chốt: "Quan trọng" là thứ do BẠN định nghĩa, dựa trên mục tiêu dài hạn của bạn.
             </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Lời khuyên cho 4 góc -->
-                <div class="bg-red-50 border border-red-200 p-4 rounded-lg">
-                    <h4 class="font-bold text-base md:text-lg text-red-700">Góc 1: Làm ngay (Quan trọng, Khẩn cấp)</h4>
-                    <p class="text-gray-600 mt-2 text-sm md:text-base">Đây là các "khủng hoảng". Bạn phải làm chúng ngay. Cố gắng giảm bớt các việc ở góc này bằng cách lập kế hoạch tốt hơn (chuyển chúng sang Góc 2 từ trước).</p>
-                </div>
-                
-                <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-                    <h4 class="font-bold text-base md:text-lg text-blue-700">Góc 2: Lên lịch (Quan trọng, Không khẩn cấp)</h4>
-                    <p class="text-gray-600 mt-2 text-sm md:text-base">Đây là góc "thành công" của bạn: học tập, phát triển kỹ năng, xây dựng quan hệ, lập kế hoạch. Hãy dành nhiều thời gian nhất ở góc này.</p>
-                </div>
-
-                <div class="bg-orange-50 border border-orange-200 p-4 rounded-lg">
-                    <h4 class="font-bold text-base md:text-lg text-orange-700">Góc 3: Ủy thác (Không quan trọng, Khẩn cấp)</h4>
-                    <p class="text-gray-600 mt-2 text-sm md:text-base">Đây là những việc làm gián đoạn, thường là việc "xã giao" hoặc việc vặt. Nếu có thể, hãy ủy thác, tự động hóa, hoặc học cách nói "không" một cách lịch sự.</p>
-                </div>
-
-                <div class="bg-gray-100 border border-gray-300 p-4 rounded-lg">
-                    <h4 class="font-bold text-base md:text-lg text-gray-700">Góc 4: Xóa bỏ (Không quan trọng, Không khẩn cấp)</h4>
-                    <p class="text-gray-600 mt-2 text-sm md:text-base">Đây là những việc làm lãng phí thời gian, gây xao lãng. Hãy thẳng thắn loại bỏ chúng để tập trung vào những việc ở Góc 1 và 2.</p>
-                </div>
+            <!-- Lời khuyên đã được thu gọn cho dễ đọc -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-red-50 border border-red-200 p-3 rounded-lg"><h4 class="font-bold text-sm md:text-lg text-red-700">Góc 1: Làm ngay</h4><p class="text-gray-600 mt-1 text-xs md:text-base">Xử lý ngay các khủng hoảng. Hãy lập kế hoạch tốt hơn để giảm bớt việc ở góc này.</p></div>
+                <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg"><h4 class="font-bold text-sm md:text-lg text-blue-700">Góc 2: Lên lịch</h4><p class="text-gray-600 mt-1 text-xs md:text-base">Góc "thành công": Học tập, rèn luyện. Hãy dành nhiều thời gian nhất ở góc này.</p></div>
+                <div class="bg-orange-50 border border-orange-200 p-3 rounded-lg"><h4 class="font-bold text-sm md:text-lg text-orange-700">Góc 3: Ủy thác</h4><p class="text-gray-600 mt-1 text-xs md:text-base">Việc vặt làm gián đoạn. Học cách nói "không" hoặc nhờ người khác hỗ trợ.</p></div>
+                <div class="bg-gray-100 border border-gray-300 p-3 rounded-lg"><h4 class="font-bold text-sm md:text-lg text-gray-700">Góc 4: Xóa bỏ</h4><p class="text-gray-600 mt-1 text-xs md:text-base">Việc gây xao lãng. Thẳng thắn loại bỏ để tiết kiệm thời gian quý báu.</p></div>
             </div>
         </section>
 
         <!-- Phần Ma trận tham khảo -->
-        <section id="referenceMatrixSection" class="mt-10 max-w-7xl mx-auto" style="display: none;">
-            <h2 class="text-2xl md:text-3xl font-bold text-center text-indigo-700 mb-2">Gợi ý Ma trận tham khảo</h2>
-            <p class="text-center text-gray-600 mb-6">Đây là một cách sắp xếp để sinh viên tham khảo. Kết quả của bạn có thể khác biệt tùy theo mục tiêu cá nhân!</p>
+        <section id="referenceMatrixSection" class="mt-8 md:mt-10 max-w-7xl mx-auto" style="display: none;">
+            <h2 class="text-xl md:text-3xl font-bold text-center text-indigo-700 mb-2">Gợi ý Ma trận tham khảo</h2>
+            <p class="text-center text-xs md:text-sm text-gray-600 mb-6">Đây là cách sắp xếp tham khảo. Kết quả có thể khác biệt tùy mục tiêu mỗi người!</p>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                
-                <!-- Góc 1 tham khảo -->
-                <div class="bg-red-100 border-2 border-red-300 rounded-lg p-5 min-h-[150px] md:min-h-[200px]">
-                    <h3 class="text-lg md:text-xl font-bold text-red-700 text-center mb-4">Góc 1: Làm ngay</h3>
-                    <div class="space-y-2">
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Ôn thi giữa kỳ môn Triết</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Làm bài tập AV (nếu sắp đến hạn)</div>
-                    </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+                <!-- Nội dung tham khảo rút gọn padding cho mobile -->
+                <div class="bg-red-100 border-2 border-red-300 rounded-lg p-2 md:p-4">
+                    <h3 class="text-sm md:text-lg font-bold text-red-700 text-center mb-2">G1: Làm ngay</h3>
+                    <div class="space-y-1"><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Ôn thi giữa kỳ môn Triết</div><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Làm bài tập AV</div></div>
                 </div>
-
-                <!-- Góc 2 tham khảo -->
-                <div class="bg-blue-100 border-2 border-blue-300 rounded-lg p-5 min-h-[150px] md:min-h-[200px]">
-                    <h3 class="text-lg md:text-xl font-bold text-blue-700 text-center mb-4">Góc 2: Lên lịch</h3>
-                    <div class="space-y-2">
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Tìm tài liệu làm tiểu luận</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Đọc sách chuyên ngành</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Lập kế hoạch tuần tới</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Đi tập thể dục</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Gọi về cho gia đình</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Dọn dẹp phòng trọ</div>
-                    </div>
+                <div class="bg-blue-100 border-2 border-blue-300 rounded-lg p-2 md:p-4">
+                    <h3 class="text-sm md:text-lg font-bold text-blue-700 text-center mb-2">G2: Lên lịch</h3>
+                    <div class="space-y-1"><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Đọc sách chuyên ngành</div><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Lập kế hoạch tuần tới</div><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Đi tập thể dục</div><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Gọi về cho gia đình</div></div>
                 </div>
-
-                <!-- Góc 3 tham khảo -->
-                <div class="bg-orange-100 border-2 border-orange-300 rounded-lg p-5 min-h-[150px] md:min-h-[200px]">
-                    <h3 class="text-lg md:text-xl font-bold text-orange-700 text-center mb-4">Góc 3: Ủy thác</h3>
-                    <div class="space-y-2">
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Đi họp CLB (trừ khi bạn là chủ chốt)</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Kiểm tra email công việc/học tập</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Trả lời tin nhắn (không khẩn cấp)</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Đi xem phim với bạn mới (việc xã giao)</div>
-                    </div>
+                <div class="bg-orange-100 border-2 border-orange-300 rounded-lg p-2 md:p-4">
+                    <h3 class="text-sm md:text-lg font-bold text-orange-700 text-center mb-2">G3: Ủy thác</h3>
+                    <div class="space-y-1"><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Đi họp CLB</div><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Kiểm tra email</div><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Trả lời tin nhắn</div><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Đi xem phim bạn mới</div></div>
                 </div>
-
-                <!-- Góc 4 tham khảo -->
-                <div class="bg-gray-200 border-2 border-gray-400 rounded-lg p-5 min-h-[150px] md:min-h-[200px]">
-                    <h3 class="text-lg md:text-xl font-bold text-gray-700 text-center mb-4">Góc 4: Xóa bỏ</h3>
-                    <div class="space-y-2">
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Lướt TikTok</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Mua sắm quần áo online</div>
-                        <div class="task-item-static bg-yellow-200 p-3 rounded-lg shadow-sm border border-yellow-400 text-sm md:text-base">Ngủ trưa 1 tiếng (trừ khi cần)</div>
-                    </div>
+                <div class="bg-gray-200 border-2 border-gray-400 rounded-lg p-2 md:p-4">
+                    <h3 class="text-sm md:text-lg font-bold text-gray-700 text-center mb-2">G4: Xóa bỏ</h3>
+                    <div class="space-y-1"><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Lướt TikTok</div><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Mua sắm online</div><div class="text-[10px] md:text-sm bg-yellow-200 p-2 rounded border border-yellow-400">Ngủ trưa dài</div></div>
                 </div>
             </div>
         </section>
-        
-        <!-- ****** KẾT THÚC PHẦN MỚI ****** -->
 
         <!-- Nút Reset & Chấm điểm -->
-        <footer class="text-center mt-10 mb-8 space-x-4">
-            <button id="scoreButton" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300" style="display: none;">
+        <footer class="text-center mt-8 mb-4 space-x-2 md:space-x-4">
+            <button id="scoreButton" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 md:py-3 md:px-6 rounded-lg shadow-md transition duration-300 text-sm md:text-base" style="display: none;">
                 Chấm điểm
             </button>
-            <button id="resetButton" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300">
+            <button id="resetButton" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 md:py-3 md:px-6 rounded-lg shadow-md transition duration-300 text-sm md:text-base">
                 Làm mới lại
             </button>
         </footer>
 
         <!-- Hiển thị điểm số -->
-        <div id="scoreDisplay" class="text-center text-2xl font-bold mt-6 mb-8"></div>
+        <div id="scoreDisplay" class="text-center text-lg md:text-2xl font-bold mt-4 mb-8"></div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const initialTasks = [
-                "Làm bài tập AV",
-                "Lướt TikTok",
-                "Gọi về cho gia đình",
-                "Đi họp CLB",
-                "Ôn thi giữa kỳ môn Triết",
-                "Tìm tài liệu làm tiểu luận",
-                "Đi xem phim với bạn mới",
-                "Dọn dẹp phòng trọ",
-                "Mua sắm quần áo online",
-                "Đọc sách chuyên ngành",
-                "Kiểm tra email công việc/học tập",
-                "Lập kế hoạch tuần tới",
-                "Đi tập thể dục",
-                "Trả lời tin nhắn (không khẩn cấp) của bạn bè",
-                "Ngủ trưa 1 tiếng"
+                "Làm bài tập AV", "Lướt TikTok", "Gọi về gia đình", "Đi họp CLB",
+                "Ôn thi Triết", "Tìm tài liệu tiểu luận", "Xem phim bạn mới", "Dọn phòng trọ",
+                "Mua quần áo online", "Đọc sách ngành", "Check email", "Lên kế hoạch tuần",
+                "Đi tập thể dục", "Trả lời tin nhắn", "Ngủ trưa 1 tiếng"
             ];
 
             const taskListContainer = document.getElementById('taskList');
-            const quadrants = document.querySelectorAll('.quadrant');
             const dropzones = document.querySelectorAll('.dropzone');
             const resetButton = document.getElementById('resetButton');
-
-            // ****** BẮT ĐẦU PHẦN MỚI ******
             const scoreButton = document.getElementById('scoreButton');
             const scoreDisplay = document.getElementById('scoreDisplay');
             const referenceMatrixSection = document.getElementById('referenceMatrixSection');
 
-            // Đây là đáp án tham khảo
-            // Ánh xạ ID của task (task-0, task-1, ...) với ID của góc (q1, q2, q3, q4)
             const taskReferenceMap = {
-                'task-0': 'q1',  // Làm bài tập AV
-                'task-1': 'q4',  // Lướt TikTok
-                'task-2': 'q2',  // Gọi về cho gia đình
-                'task-3': 'q3',  // Đi họp CLB
-                'task-4': 'q1',  // Ôn thi giữa kỳ môn Triết
-                'task-5': 'q2',  // Tìm tài liệu làm tiểu luận
-                'task-6': 'q3',  // Đi xem phim với bạn mới
-                'task-7': 'q2',  // Dọn dẹp phòng trọ
-                'task-8': 'q4',  // Mua sắm quần áo online
-                'task-9': 'q2',  // Đọc sách chuyên ngành
-                'task-10': 'q3', // Kiểm tra email công việc/học tập
-                'task-11': 'q2', // Lập kế hoạch tuần tới
-                'task-12': 'q2', // Đi tập thể dục
-                'task-13': 'q3', // Trả lời tin nhắn (không khẩn cấp)
-                'task-14': 'q4'  // Ngủ trưa 1 tiếng
+                'task-0': 'q1', 'task-1': 'q4', 'task-2': 'q2', 'task-3': 'q3',
+                'task-4': 'q1', 'task-5': 'q2', 'task-6': 'q3', 'task-7': 'q2',
+                'task-8': 'q4', 'task-9': 'q2', 'task-10': 'q3', 'task-11': 'q2',
+                'task-12': 'q2', 'task-13': 'q3', 'task-14': 'q4'
             };
             
             const totalTasks = initialTasks.length;
-            
-            let dropCount = 0; // Thêm biến đếm số lần thả
-            // ****** KẾT THÚC PHẦN MỚI ******
-
+            let dropCount = 0; 
             let draggedItem = null;
 
-            // Hàm khởi tạo danh sách nhiệm vụ
             function initializeTasks() {
-                taskListContainer.innerHTML = ''; // Xóa sạch
+                taskListContainer.innerHTML = ''; 
                 initialTasks.forEach((taskText, index) => {
                     const taskElement = document.createElement('div');
-                    // Thêm class cho mobile (w-40, h-24, text-sm) và reset trên desktop (md:w-full, md:h-auto, md:text-base)
-                    taskElement.classList.add('task-item', 'bg-yellow-100', 'p-3', 'rounded-lg', 'shadow-sm', 'cursor-move', 'border', 'border-yellow-300', 'transition-all', 'flex-shrink-0', 'w-40', 'md:w-full', 'h-24', 'md:h-auto', 'text-sm', 'md:text-base', 'flex', 'items-center', 'justify-center', 'text-center');
+                    // Tinh chỉnh class cho mobile: width, height, font-size nhỏ hơn
+                    taskElement.classList.add(
+                        'task-item', 'bg-yellow-100', 'p-2', 'md:p-3', 'rounded', 'md:rounded-lg', 
+                        'shadow-sm', 'cursor-move', 'border', 'border-yellow-300', 'transition-all', 
+                        'flex-shrink-0', 'w-28', 'md:w-full', 'h-14', 'md:h-auto', 
+                        'text-[11px]', 'md:text-base', 'font-medium', 'flex', 'items-center', 
+                        'justify-center', 'text-center', 'leading-tight'
+                    );
                     taskElement.textContent = taskText;
                     taskElement.draggable = true;
                     taskElement.id = 'task-' + index;
@@ -272,23 +209,18 @@
                 addDragListeners();
             }
 
-            // Hàm thêm sự kiện kéo thả cho các task
             function addDragListeners() {
                 const tasks = document.querySelectorAll('.task-item');
                 tasks.forEach(task => {
-                    // Sự kiện trên máy tính
                     task.addEventListener('dragstart', handleDragStart);
                     task.addEventListener('dragend', handleDragEnd);
-
-                    // Sự kiện cho màn hình cảm ứng
                     task.addEventListener('touchstart', handleTouchStart, { passive: false });
                     task.addEventListener('touchmove', handleTouchMove, { passive: false });
                     task.addEventListener('touchend', handleTouchEnd);
                 });
             }
 
-            // ---- Sự kiện cho Kéo/Thả (Mouse) ----
-            
+            // ---- Desktop Drag Events ----
             function handleDragStart(e) {
                 draggedItem = this;
                 setTimeout(() => this.classList.add('dragging'), 0);
@@ -304,164 +236,106 @@
             }
 
             dropzones.forEach(zone => {
-                zone.addEventListener('dragover', handleDragOver);
-                zone.addEventListener('dragenter', handleDragEnter);
-                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+                zone.addEventListener('dragenter', function(e) { e.preventDefault(); this.parentElement.classList.add('ring-2', 'ring-indigo-400'); });
+                zone.addEventListener('dragleave', function() { this.parentElement.classList.remove('ring-2', 'ring-indigo-400'); });
                 zone.addEventListener('drop', handleDrop);
             });
 
-            function handleDragOver(e) {
-                e.preventDefault(); // Cần thiết để cho phép thả
-                e.dataTransfer.dropEffect = 'move';
-            }
-
-            function handleDragEnter(e) {
-                e.preventDefault();
-                this.classList.add('bg-gray-200', 'rounded-lg');
-            }
-
-            function handleDragLeave(e) {
-                this.classList.remove('bg-gray-200', 'rounded-lg');
-            }
-
             function handleDrop(e) {
                 e.preventDefault();
-                this.classList.remove('bg-gray-200', 'rounded-lg');
-                
+                this.parentElement.classList.remove('ring-2', 'ring-indigo-400');
                 const id = e.dataTransfer.getData('text/plain');
                 const draggableElement = document.getElementById(id);
-                
-                if (draggableElement) {
-                    this.appendChild(draggableElement);
-                    // Thay đổi style khi đã vào ma trận
-                    draggableElement.classList.remove('bg-yellow-100', 'border-yellow-300');
-                    draggableElement.classList.add('bg-yellow-200', 'border-yellow-400');
-
-                    // ****** BẮT ĐẦU PHẦN MỚI ******
-                    // Đếm và kiểm tra để hiện nút
-                    dropCount++;
-                    if (dropCount >= 4) {
-                        scoreButton.style.display = 'inline-block';
-                    }
-                    // ****** KẾT THÚC PHẦN MỚI ******
-                }
+                if (draggableElement) placeItem(this, draggableElement);
             }
             
-            // ---- Sự kiện cho Chạm (Touch) ----
-            // Biến này để lưu trữ phần tử đang được kéo bằng cảm ứng
+            // ---- Mobile Touch Events ----
             let touchDraggedItem = null;
-            let touchStartX = 0;
-            let touchStartY = 0;
 
             function handleTouchStart(e) {
-                // Chỉ cho phép kéo bằng một ngón tay
                 if (e.touches.length !== 1) return;
                 
+                // Khóa cuộn trang khi đang kéo
+                document.body.style.overflow = 'hidden'; 
+                
                 touchDraggedItem = this;
-                
-                // Lưu vị trí bắt đầu chạm
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                
-                // Tạo một bản sao để di chuyển
                 const clone = touchDraggedItem.cloneNode(true);
                 clone.id = 'touch-clone';
-                clone.style.position = 'absolute';
-                clone.style.zIndex = '1000';
-                clone.style.pointerEvents = 'none'; // Để các sự kiện 'touchmove' có thể phát hiện 'elementFromPoint'
-                clone.style.width = `${touchDraggedItem.offsetWidth}px`; // Giữ nguyên chiều rộng
-                clone.style.opacity = '0.8';
+                clone.style.position = 'fixed'; // Dùng fixed để không bị giật theo scroll
+                clone.style.zIndex = '9999';
+                clone.style.pointerEvents = 'none'; 
+                clone.style.width = `${touchDraggedItem.offsetWidth}px`;
+                clone.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.3)';
+                clone.style.opacity = '0.9';
                 document.body.appendChild(clone);
                 
-                // Ẩn phần tử gốc
                 touchDraggedItem.classList.add('dragging');
-
-                // Di chuyển bản sao đến vị trí ngón tay
                 updateClonePosition(e.touches[0]);
             }
             
             function handleTouchMove(e) {
                 if (!touchDraggedItem || e.touches.length !== 1) return;
-                
-                // Ngăn cuộn trang khi đang kéo
                 e.preventDefault(); 
-                
                 updateClonePosition(e.touches[0]);
             }
 
             function updateClonePosition(touch) {
                 const clone = document.getElementById('touch-clone');
                 if (!clone) return;
-                
+                // Offset: Cho bản sao NỔI LÊN PHÍA TRÊN ngón tay một chút (trừ đi 40px) để không bị che khuất
                 clone.style.left = `${touch.clientX - (clone.offsetWidth / 2)}px`;
-                clone.style.top = `${touch.clientY - (clone.offsetHeight / 2)}px`;
+                clone.style.top = `${touch.clientY - clone.offsetHeight - 20}px`; 
             }
 
             function handleTouchEnd(e) {
                 if (!touchDraggedItem) return;
                 
+                // Mở lại cuộn trang
+                document.body.style.overflow = ''; 
+
                 const clone = document.getElementById('touch-clone');
-                
-                // Tìm vùng thả bên dưới ngón tay
                 let dropTarget = null;
+                
                 if (clone) {
-                    // Tạm thời ẩn clone để xác định phần tử bên dưới
                     clone.style.display = 'none'; 
                     dropTarget = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-                    clone.style.display = 'block'; // Hiển thị lại
-                } else {
-                    dropTarget = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+                    clone.remove();
                 }
 
-                // Tìm dropzone gần nhất
                 const targetDropzone = dropTarget ? dropTarget.closest('.dropzone') : null;
                 
                 if (targetDropzone) {
-                    targetDropzone.appendChild(touchDraggedItem);
-                    // Thay đổi style khi đã vào ma trận
-                    touchDraggedItem.classList.remove('bg-yellow-100', 'border-yellow-300');
-                    touchDraggedItem.classList.add('bg-yellow-200', 'border-yellow-400');
-
-                    // ****** BẮT ĐẦU PHẦN MỚI ******
-                    // Đếm và kiểm tra để hiện nút
-                    dropCount++;
-                    if (dropCount >= 4) {
-                        scoreButton.style.display = 'inline-block';
-                    }
-                    // ****** KẾT THÚC PHẦN MỚI ******
+                    placeItem(targetDropzone, touchDraggedItem);
                 }
 
-                // Xóa bản sao và hiển thị lại phần tử gốc
-                if (clone) {
-                    clone.remove();
-                }
                 touchDraggedItem.classList.remove('dragging');
                 touchDraggedItem = null;
             }
 
-            // ---- Sự kiện Nút Reset ----
-            resetButton.addEventListener('click', () => {
-                // Xóa tất cả task trong các ô
-                dropzones.forEach(zone => {
-                    zone.innerHTML = '';
-                });
-                // Tạo lại danh sách task ban đầu
-                initializeTasks();
+            // Hàm dùng chung cho cả drag (chuột) và touch (cảm ứng) để đặt thẻ vào ô
+            function placeItem(zone, item) {
+                zone.appendChild(item);
+                // Giữ lại width đầy đủ trong ô ma trận thay vì bị ép nhỏ như dưới thanh task
+                item.classList.remove('bg-yellow-100', 'border-yellow-300', 'w-28');
+                item.classList.add('bg-yellow-200', 'border-yellow-400', 'w-full', 'mb-1');
+                
+                dropCount++;
+                if (dropCount >= 4) {
+                    scoreButton.style.display = 'inline-block';
+                }
+            }
 
-                // ****** BẮT ĐẦU PHẦN MỚI ******
-                // Ẩn điểm và ma trận tham khảo
+            // ---- Xử lý Nút chức năng ----
+            resetButton.addEventListener('click', () => {
+                dropzones.forEach(zone => zone.innerHTML = '');
+                initializeTasks();
                 scoreDisplay.innerHTML = '';
                 referenceMatrixSection.style.display = 'none';
-
-                // ****** BẮT ĐẦU PHẦN MỚI ******
-                // Reset bộ đếm và ẩn nút chấm điểm
                 dropCount = 0;
                 scoreButton.style.display = 'none';
-                // ****** KẾT THÚC PHẦN MỚI ******
             });
 
-            // ****** BẮT ĐẦU PHẦN MỚI ******
-            // ---- Sự kiện Nút Chấm điểm ----
             scoreButton.addEventListener('click', () => {
                 let correctCount = 0;
                 let unplacedCount = 0;
@@ -469,7 +343,6 @@
                 for (let i = 0; i < totalTasks; i++) {
                     const taskId = 'task-' + i;
                     const taskElement = document.getElementById(taskId);
-                    
                     if (!taskElement) continue;
 
                     const parentQuadrant = taskElement.closest('.quadrant');
@@ -478,36 +351,35 @@
 
                     if (parentQuadrant && parentQuadrant.id === correctQuadrantId) {
                         correctCount++;
-                        // Thêm viền xanh cho đáp án đúng
-                        taskElement.style.border = '3px solid #10b981'; // green-500
+                        taskElement.style.border = '2px solid #10b981'; 
+                        taskElement.style.backgroundColor = '#d1fae5';
                     } else if (taskList) {
                         unplacedCount++;
-                        // Thêm viền xám cho cái chưa xếp
-                         taskElement.style.border = '3px solid #9ca3af'; // gray-400
+                        taskElement.style.border = '2px solid #9ca3af'; 
                     } else if (parentQuadrant) {
-                        // Xếp sai vị trí
-                        taskElement.style.border = '3px solid #ef4444'; // red-500
+                        taskElement.style.border = '2px solid #ef4444'; 
+                        taskElement.style.backgroundColor = '#fee2e2';
                     }
                 }
 
                 const score = Math.round((correctCount / totalTasks) * 100);
-
-                let scoreHTML = `Bạn đã xếp đúng ${correctCount} / ${totalTasks} nhiệm vụ. <br> Điểm của bạn: <span class="text-blue-600">${score} / 100</span>`;
+                let scoreHTML = `Đúng ${correctCount}/${totalTasks} nhiệm vụ. <br> Điểm: <span class="text-blue-600">${score} / 100</span>`;
                 
                 if (unplacedCount > 0) {
-                     scoreHTML += `<br><span class="text-sm text-red-500">Bạn còn ${unplacedCount} nhiệm vụ chưa xếp. Hãy hoàn thành và chấm lại nhé!</span>`;
+                     scoreHTML += `<br><span class="text-xs md:text-sm text-red-500 mt-2 block">Còn ${unplacedCount} nhiệm vụ chưa xếp dưới thanh Task kìa!</span>`;
                 } else {
-                     scoreHTML += `<br><span class="text-sm text-green-600">Bạn đã hoàn thành! Hãy xem ma trận tham khảo bên dưới.</span>`;
+                     scoreHTML += `<br><span class="text-xs md:text-sm text-green-600 mt-2 block">Tuyệt vời! Kéo xuống để xem ma trận tham khảo.</span>`;
                 }
 
                 scoreDisplay.innerHTML = scoreHTML;
-
-                // Hiển thị ma trận tham khảo
                 referenceMatrixSection.style.display = 'block';
+                
+                // Tự động cuộn xuống kết quả trên mobile
+                if(window.innerWidth < 768) {
+                    scoreDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             });
-            // ****** KẾT THÚC PHẦN MỚI ******
 
-            // Khởi chạy lần đầu
             initializeTasks();
         });
     </script>
