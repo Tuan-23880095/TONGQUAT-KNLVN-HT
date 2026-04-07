@@ -12,7 +12,7 @@
         body {
             font-family: 'Inter', sans-serif;
             /* Thêm padding dưới để không bị thanh task che mất nội dung trên mobile */
-            padding-bottom: 120px; 
+            padding-bottom: 150px; 
         }
         @media (min-width: 768px) {
             body { padding-bottom: 0; }
@@ -104,8 +104,21 @@
             </section>
         </main>
 
+        <!-- Nút Reset & Chấm điểm (Đã được dời lên trên để không bị che và dễ thao tác) -->
+        <div class="text-center mt-8 mb-4 space-x-2 md:space-x-4">
+            <button id="scoreButton" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 md:py-3 md:px-6 rounded-lg shadow-md transition duration-300 text-sm md:text-base" style="display: none;">
+                Chấm điểm
+            </button>
+            <button id="resetButton" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 md:py-3 md:px-6 rounded-lg shadow-md transition duration-300 text-sm md:text-base">
+                Làm mới lại
+            </button>
+        </div>
+
+        <!-- Hiển thị điểm số -->
+        <div id="scoreDisplay" class="text-center text-lg md:text-2xl font-bold mt-4 mb-8 px-2"></div>
+
         <!-- Phần Thảo luận & Lời khuyên -->
-        <section class="mt-8 md:mt-10 max-w-5xl mx-auto bg-white p-4 md:p-6 rounded-lg shadow-lg">
+        <section class="mt-4 md:mt-10 max-w-5xl mx-auto bg-white p-4 md:p-6 rounded-lg shadow-lg">
             <h2 class="text-xl md:text-3xl font-bold text-center text-indigo-700 mb-4 md:mb-6">Thảo luận & Lời khuyên</h2>
             <p class="text-center text-sm md:text-lg text-gray-700 mb-4">
                 Sau khi hoàn thành, hãy so sánh kết quả của nhóm bạn với các nhóm khác. Sẽ có những nhiệm vụ gây tranh cãi (ví dụ: "Đi xem phim với bạn mới", "Đi họp CLB").
@@ -148,18 +161,6 @@
             </div>
         </section>
 
-        <!-- Nút Reset & Chấm điểm -->
-        <footer class="text-center mt-8 mb-4 space-x-2 md:space-x-4">
-            <button id="scoreButton" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 md:py-3 md:px-6 rounded-lg shadow-md transition duration-300 text-sm md:text-base" style="display: none;">
-                Chấm điểm
-            </button>
-            <button id="resetButton" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 md:py-3 md:px-6 rounded-lg shadow-md transition duration-300 text-sm md:text-base">
-                Làm mới lại
-            </button>
-        </footer>
-
-        <!-- Hiển thị điểm số -->
-        <div id="scoreDisplay" class="text-center text-lg md:text-2xl font-bold mt-4 mb-8"></div>
     </div>
 
     <script>
@@ -374,10 +375,8 @@
                 scoreDisplay.innerHTML = scoreHTML;
                 referenceMatrixSection.style.display = 'block';
                 
-                // Tự động cuộn xuống kết quả trên mobile
-                if(window.innerWidth < 768) {
-                    scoreDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                // Tự động cuộn xuống kết quả
+                scoreDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
             });
 
             initializeTasks();
