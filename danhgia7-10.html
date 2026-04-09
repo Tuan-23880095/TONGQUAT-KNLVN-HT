@@ -406,7 +406,7 @@
             <h2 class="text-3xl font-bold text-teal mb-4 border-b-2 border-teal inline-block pb-2">📱 Web App: Chấm Điểm Trực Tiếp</h2>
             <p class="text-warm-800 mb-6">Ban Kiểm Toán sử dụng biểu mẫu này để rà soát checklist, chọn điểm (bước nhảy 0.25) và nộp kết quả về máy chủ. Bạn có thể xuất PDF để lưu về thiết bị làm bằng chứng đối chiếu.</p>
 
-            <div id="export-pdf-area" class="bg-white rounded-xl shadow-md border border-warm-200 p-5 md:p-8">
+            <div id="export-pdf-area" class="bg-white rounded-xl shadow-md border border-warm-200 p-5 md:p-8 relative">
                 
                 <div class="text-center mb-6 border-b border-warm-200 pb-4">
                     <h3 class="text-2xl font-bold text-warm-900">PHIẾU ĐÁNH GIÁ CHÉO DỰ ÁN</h3>
@@ -562,21 +562,17 @@
         }
 
         function toggleCheck(checkbox) {
-            // Find the next sibling span with class 'checklist-item'
             let sibling = checkbox.nextElementSibling;
             while(sibling && !sibling.classList.contains('checklist-item')) {
                 sibling = sibling.nextElementSibling;
             }
             if(sibling) {
-                if (checkbox.checked) {
-                    sibling.classList.add('checked');
-                } else {
-                    sibling.classList.remove('checked');
-                }
+                if (checkbox.checked) sibling.classList.add('checked');
+                else sibling.classList.remove('checked');
             }
         }
 
-        // --- 2. KHỞI TẠO CÁC DROPDOWN CHẤM ĐIỂM (Bước nhảy 0.25) ---
+        // --- 2. KHỞI TẠO CÁC DROPDOWN CHẤM ĐIỂM ---
         function populateScoreDropdown(elementId, maxScore) {
             const select = document.getElementById(elementId);
             let html = '';
@@ -584,73 +580,39 @@
                 html += `<option value="${i}">+ ${i} đ</option>`;
             }
             select.innerHTML = html;
-            select.value = "0"; // Default là 0 để sinh viên phải tự chọn
+            select.value = "0"; 
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Setup score dropdowns
             populateScoreDropdown('score_1', 4.0);
             populateScoreDropdown('score_2', 3.0);
             populateScoreDropdown('score_3', 2.0);
             populateScoreDropdown('score_4', 1.0);
             calculateTotal();
 
-            // Khởi tạo Biểu đồ Kịch Bản (Doughnut)
             const ctxTime = document.getElementById('timeChart').getContext('2d');
             new Chart(ctxTime, { 
                 type: 'doughnut', 
-                data: { 
-                    labels: ['Chuẩn bị', 'Đánh giá chéo', 'Hội quân', 'Tổng kết'], 
-                    datasets: [{ 
-                        data: [10, 60, 20, 30], 
-                        backgroundColor: ['#E7E5E4', '#4A7C76', '#C17A3D', '#292524'],
-                        borderWidth: 2, borderColor: '#ffffff'
-                    }] 
-                }, 
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    cutout: '65%',
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Inter' } } }
-                    }
-                } 
+                data: { labels: ['Chuẩn bị', 'Đánh giá chéo', 'Hội quân', 'Tổng kết'], datasets: [{ data: [10, 60, 20, 30], backgroundColor: ['#E7E5E4', '#4A7C76', '#C17A3D', '#292524'], borderWidth: 2, borderColor: '#ffffff' }] }, 
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Inter' } } } } } 
             });
             
-            // Khởi tạo Biểu đồ Tiêu chí (Polar Area)
             const ctxCriteria = document.getElementById('criteriaChart').getContext('2d');
             new Chart(ctxCriteria, { 
                 type: 'polarArea', 
-                data: { 
-                    labels: ['Minh chứng (40%)', 'Tiến độ (30%)', 'Phối hợp (20%)', 'Rủi ro (10%)'], 
-                    datasets: [{ 
-                        data: [40, 30, 20, 10], 
-                        backgroundColor: ['rgba(193, 122, 61, 0.8)', 'rgba(74, 124, 118, 0.8)', 'rgba(168, 162, 158, 0.8)', 'rgba(41, 37, 36, 0.8)'],
-                        borderWidth: 1, borderColor: '#ffffff'
-                    }] 
-                }, 
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    scales: { r: { ticks: { display: false } } },
-                    plugins: {
-                        legend: { position: 'right', labels: { font: { family: 'Inter' } } }
-                    }
-                } 
+                data: { labels: ['Minh chứng (40%)', 'Tiến độ (30%)', 'Phối hợp (20%)', 'Rủi ro (10%)'], datasets: [{ data: [40, 30, 20, 10], backgroundColor: ['rgba(193, 122, 61, 0.8)', 'rgba(74, 124, 118, 0.8)', 'rgba(168, 162, 158, 0.8)', 'rgba(41, 37, 36, 0.8)'], borderWidth: 1, borderColor: '#ffffff' }] }, 
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false } } }, plugins: { legend: { position: 'right', labels: { font: { family: 'Inter' } } } } } 
             });
         });
 
-        // Tính tổng điểm
         function calculateTotal() {
             const s1 = parseFloat(document.getElementById('score_1').value) || 0;
             const s2 = parseFloat(document.getElementById('score_2').value) || 0;
             const s3 = parseFloat(document.getElementById('score_3').value) || 0;
             const s4 = parseFloat(document.getElementById('score_4').value) || 0;
-            const total = s1 + s2 + s3 + s4;
-            document.getElementById('total_score_display').innerText = total.toFixed(2);
+            document.getElementById('total_score_display').innerText = (s1 + s2 + s3 + s4).toFixed(2);
         }
 
-        // Điều hướng active menu (Scroll Spy)
         const navLinks = document.querySelectorAll('.nav-link');
         window.addEventListener('scroll', () => {
             let current = '';
@@ -663,30 +625,69 @@
             });
         });
 
-        // --- 3. TÍNH NĂNG XUẤT PDF LƯU ĐIỆN THOẠI ---
+        // --- 3. TÍNH NĂNG XUẤT PDF (ĐÃ KHẮC PHỤC LỖI TRANG TRẮNG CỦA TAILWIND) ---
         function exportToPDF() {
-            const element = document.getElementById('export-pdf-area');
+            const originalElement = document.getElementById('export-pdf-area');
             const nhomBiCham = document.getElementById('inp_nhom_bi_cham').value || "X";
             
+            showModal('⏳', 'Đang tạo file PDF...', 'Hệ thống đang xuất file, vui lòng đợi giây lát.', false);
+
+            // BƯỚC 1: TẠO BẢN SAO (CLONE)
+            // Việc clone giúp tách phần nội dung ra khỏi thanh cuộn "overflow-y-auto" của trang web,
+            // nguyên nhân chính khiến html2pdf chụp bị khuất tầm nhìn và ra trang trắng.
+            const clonedElement = originalElement.cloneNode(true);
+
+            // BƯỚC 2: SAO CHÉP GIÁ TRỊ HIỆN TẠI TỪ BẢN GỐC SANG BẢN SAO
+            // cloneNode() không copy được giá trị mà người dùng vừa nhập vào input/select/textarea
+            const originalSelects = originalElement.querySelectorAll('select');
+            const clonedSelects = clonedElement.querySelectorAll('select');
+            originalSelects.forEach((select, index) => clonedSelects[index].value = select.value);
+
+            const originalInputs = originalElement.querySelectorAll('input');
+            const clonedInputs = clonedElement.querySelectorAll('input');
+            originalInputs.forEach((input, index) => {
+                if (input.type === 'checkbox') clonedInputs[index].checked = input.checked;
+                else clonedInputs[index].value = input.value;
+            });
+
+            const originalTextareas = originalElement.querySelectorAll('textarea');
+            const clonedTextareas = clonedElement.querySelectorAll('textarea');
+            originalTextareas.forEach((textarea, index) => clonedTextareas[index].value = textarea.value);
+
+            // BƯỚC 3: ÉP KÍCH THƯỚC TRÊN BẢN SAO
+            // Chỉnh lại CSS cho bản sao để lúc chụp ảnh màn hình không bị vỡ layout giao diện mobile
+            clonedElement.style.position = 'absolute';
+            clonedElement.style.top = '-9999px'; // Đẩy ra ngoài tầm nhìn màn hình
+            clonedElement.style.left = '-9999px';
+            clonedElement.style.width = '800px'; // Ép thành giao diện máy tính chuẩn A4
+            clonedElement.style.background = '#ffffff'; // Ép nền trắng
+            document.body.appendChild(clonedElement);
+
+            // BƯỚC 4: CẤU HÌNH VÀ XUẤT PDF
             const opt = {
-                margin:       [0.5, 0.5, 0.5, 0.5],
+                margin:       [0.4, 0.4, 0.4, 0.4],
                 filename:     `Phieu_Cham_Diem_Nhom_${nhomBiCham}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true,
+                    scrollY: 0, // Tránh lỗi lệch cuộn trang
+                    backgroundColor: '#ffffff'
+                },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
-
-            showModal('⏳', 'Đang tạo file PDF...', 'Hệ thống đang xuất file, vui lòng đợi giây lát.', false);
             
-            html2pdf().set(opt).from(element).save().then(() => {
-                showModal('✅', 'Xuất PDF Thành Công', `File Phieu_Cham_Diem_Nhom_${nhomBiCham}.pdf đã được tải xuống máy của bạn.`, true);
+            html2pdf().set(opt).from(clonedElement).save().then(() => {
+                document.body.removeChild(clonedElement); // Dọn dẹp bản sao
+                showModal('✅', 'Xuất PDF Thành Công', `File Phieu_Cham_Diem_Nhom_${nhomBiCham}.pdf đã được tải xuống.`, true);
             }).catch(err => {
+                document.body.removeChild(clonedElement); // Dọn dẹp bản sao dù bị lỗi
                 showModal('❌', 'Lỗi Xuất File', 'Có lỗi xảy ra khi tạo PDF. Vui lòng thử lại.', true);
+                console.error(err);
             });
         }
 
         // --- 4. TÍNH NĂNG GỬI GOOGLE SHEETS QUA APP SCRIPT ---
-        // !!! LƯU Ý CHO GIẢNG VIÊN: Thay chuỗi 'URL_APP_SCRIPT_CUA_THAY_CO_O_DAY' bằng Web App URL thật
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFBE7O6MCToX81OkJbu8xxYLeprJ6c0VAcNDIT1ekKCXyvVXh2_-a1V13ipdi5UEv9Aw/exec'; 
 
         async function submitToGoogleSheet() {
@@ -702,7 +703,6 @@
             const keepTxt = document.getElementById('inp_keep').value.trim();
             const changeTxt = document.getElementById('inp_change').value.trim();
 
-            // Đóng gói dữ liệu chuẩn action: "save_danh_gia_cheo"
             const payload = {
                 action: "save_danh_gia_cheo",
                 SheetName: "Danhgia7-10", 
@@ -714,7 +714,7 @@
                 Quan_Ly_20: document.getElementById('score_2').value + " / 3.0", 
                 Giao_Tiep_20: document.getElementById('score_3').value + " / 2.0", 
                 Giai_Quyet_VD_15: document.getElementById('score_4').value + " / 1.0", 
-                Noi_Dung_25: "", // Bỏ trống
+                Noi_Dung_25: "", 
                 Tong_Diem_Phan_Tram: document.getElementById('total_score_display').innerText + " / 10",
                 Nhan_Xet: "KEEP: " + (keepTxt||"Không có") + " | CHANGE: " + (changeTxt||"Không có")
             };
