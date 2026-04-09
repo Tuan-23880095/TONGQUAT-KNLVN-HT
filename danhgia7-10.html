@@ -624,69 +624,37 @@
                 if (link.getAttribute('href').substring(1) === current) link.classList.add('active');
             });
         });
-
-        // --- 3. TÍNH NĂNG XUẤT PDF (ĐÃ KHẮC PHỤC LỖI TRANG TRẮNG CỦA TAILWIND) ---
+        // --- 3. TÍNH NĂNG XUẤT PDF (SỬ DỤNG TRÌNH DUYỆT MẶC ĐỊNH) ---
         function exportToPDF() {
-            const originalElement = document.getElementById('export-pdf-area');
-            const nhomBiCham = document.getElementById('inp_nhom_bi_cham').value || "X";
+            window.print();
+        } 
+        /* --- CẤU HÌNH GIAO DIỆN KHI IN/XUẤT PDF --- */
+            @media print {
+                /* 1. Ẩn tất cả mọi thứ trên trang */
+                body * {
+                    visibility: hidden;
+                }
+                
+                /* 2. Chỉ hiển thị vùng có id="export-pdf-area" và các phần tử con của nó */
+                #export-pdf-area, #export-pdf-area * {
+                    visibility: visible;
+                }
+                
+                /* 3. Đưa vùng cần in lên góc trên cùng bên trái, bỏ qua các lề của giao diện web */
+                #export-pdf-area {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    box-shadow: none !important; /* Bỏ viền bóng để file PDF sạch đẹp */
+                    border: none !important;
+                }
             
-            showModal('⏳', 'Đang tạo file PDF...', 'Hệ thống đang xuất file, vui lòng đợi giây lát.', false);
-
-            // BƯỚC 1: TẠO BẢN SAO (CLONE)
-            // Việc clone giúp tách phần nội dung ra khỏi thanh cuộn "overflow-y-auto" của trang web,
-            // nguyên nhân chính khiến html2pdf chụp bị khuất tầm nhìn và ra trang trắng.
-            const clonedElement = originalElement.cloneNode(true);
-
-            // BƯỚC 2: SAO CHÉP GIÁ TRỊ HIỆN TẠI TỪ BẢN GỐC SANG BẢN SAO
-            // cloneNode() không copy được giá trị mà người dùng vừa nhập vào input/select/textarea
-            const originalSelects = originalElement.querySelectorAll('select');
-            const clonedSelects = clonedElement.querySelectorAll('select');
-            originalSelects.forEach((select, index) => clonedSelects[index].value = select.value);
-
-            const originalInputs = originalElement.querySelectorAll('input');
-            const clonedInputs = clonedElement.querySelectorAll('input');
-            originalInputs.forEach((input, index) => {
-                if (input.type === 'checkbox') clonedInputs[index].checked = input.checked;
-                else clonedInputs[index].value = input.value;
-            });
-
-            const originalTextareas = originalElement.querySelectorAll('textarea');
-            const clonedTextareas = clonedElement.querySelectorAll('textarea');
-            originalTextareas.forEach((textarea, index) => clonedTextareas[index].value = textarea.value);
-
-            // BƯỚC 3: ÉP KÍCH THƯỚC TRÊN BẢN SAO
-            // Chỉnh lại CSS cho bản sao để lúc chụp ảnh màn hình không bị vỡ layout giao diện mobile
-            clonedElement.style.position = 'absolute';
-            clonedElement.style.top = '0'; // Đẩy ra ngoài tầm nhìn màn hình
-            clonedElement.style.left = '0';
-            clonedElement.style.zIndex = '-1000'; // Giấu bản clone ra sau lưng giao diện hiện tại
-            clonedElement.style.width = '800px'; // Ép thành giao diện máy tính chuẩn A4
-            clonedElement.style.background = '#ffffff'; // Ép nền trắng
-            document.body.appendChild(clonedElement);
-
-            // BƯỚC 4: CẤU HÌNH VÀ XUẤT PDF
-            const opt = {
-                margin:       [0.4, 0.4, 0.4, 0.4],
-                filename:     `Phieu_Cham_Diem_Nhom_${nhomBiCham}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { 
-                    scale: 2, 
-                    useCORS: true,
-                    scrollY: 0, // Tránh lỗi lệch cuộn trang
-                    backgroundColor: '#ffffff'
-                },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-            
-            html2pdf().set(opt).from(clonedElement).save().then(() => {
-                document.body.removeChild(clonedElement); // Dọn dẹp bản sao
-                showModal('✅', 'Xuất PDF Thành Công', `File Phieu_Cham_Diem_Nhom_${nhomBiCham}.pdf đã được tải xuống.`, true);
-            }).catch(err => {
-                document.body.removeChild(clonedElement); // Dọn dẹp bản sao dù bị lỗi
-                showModal('❌', 'Lỗi Xuất File', 'Có lỗi xảy ra khi tạo PDF. Vui lòng thử lại.', true);
-                console.error(err);
-            });
-        }
+                /* 4. Ẩn luôn các nút bấm "Xuất lưu PDF" và "Gửi điểm" nằm dưới vùng in */
+                button {
+                    display: none !important;
+                }
+            }
 
         // --- 4. TÍNH NĂNG GỬI GOOGLE SHEETS QUA APP SCRIPT ---
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFBE7O6MCToX81OkJbu8xxYLeprJ6c0VAcNDIT1ekKCXyvVXh2_-a1V13ipdi5UEv9Aw/exec'; 
