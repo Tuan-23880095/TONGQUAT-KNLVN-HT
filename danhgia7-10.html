@@ -657,8 +657,9 @@
             // BƯỚC 3: ÉP KÍCH THƯỚC TRÊN BẢN SAO
             // Chỉnh lại CSS cho bản sao để lúc chụp ảnh màn hình không bị vỡ layout giao diện mobile
             clonedElement.style.position = 'absolute';
-            clonedElement.style.top = '-9999px'; // Đẩy ra ngoài tầm nhìn màn hình
-            clonedElement.style.left = '-9999px';
+            clonedElement.style.top = '0'; // Đẩy ra ngoài tầm nhìn màn hình
+            clonedElement.style.left = '0';
+            clonedElement.style.zIndex = '-1000'; // Giấu bản clone ra sau lưng giao diện hiện tại
             clonedElement.style.width = '800px'; // Ép thành giao diện máy tính chuẩn A4
             clonedElement.style.background = '#ffffff'; // Ép nền trắng
             document.body.appendChild(clonedElement);
