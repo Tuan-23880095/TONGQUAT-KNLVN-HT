@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hệ thống Đánh giá Chéo Tuần 7</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Thư viện xuất PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        warm: { 50: '#FAFAF9', 100: '#F5F5F4', 200: '#E7E5E4', 300: '#D6D3D1', 800: '#292524', 900: '#1C1917' },
+                        accent: { light: '#E8B675', DEFAULT: '#C17A3D', dark: '#9A5D2C' },
+                        teal: { DEFAULT: '#4A7C76', light: '#6B9D97' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FAFAF9; color: #292524; scroll-behavior: smooth; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 350px; max-height: 400px; }
+        @media (max-width: 640px) { .chart-container { height: 280px; } }
+        .tab-btn.active { border-bottom: 2px solid #C17A3D; color: #C17A3D; font-weight: 600; }
+        .checklist-item.checked { text-decoration: line-through; color: #A8A29E; }
+        .nav-link.active { background-color: #F5F5F4; color: #C17A3D; font-weight: 600; border-left: 4px solid #C17A3D; }
+        /* Tối ưu tap target cho mobile */
+        select, input, textarea, button { font-size: 16px !important; } 
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col md:flex-row min-h-screen">
+
+<!-- Chosen Palette: Warm Neutrals with Terracotta (Accent) and Muted Teal secondary accents. -->
+<!-- Application Structure Plan: The SPA integrates the full instructional documentation (Overview, Script, Roles, Criteria, Standard Form) alongside a highly functional Live Grading tool. A sticky sidebar (bottom nav on mobile) ensures quick navigation. The layout uses Tailwind grids and flexbox to manage the dense information elegantly without overwhelming the user, optimizing tap targets for mobile use during live evaluations. -->
+<!-- Visualization & Content Choices: Doughnut Chart for Time Allocation; Polar Area Chart for Criteria Weights; Interactive HTML Checklists and Tabs for Role Duties; Responsive Table for Rubric; Interactive form with automated calculations, PDF generation via html2pdf, and Apps Script fetch API integration for the Live Grading section. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- SIDEBAR DESKTOP -->
+    <nav class="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-warm-200 sticky top-0 md:h-screen z-40 overflow-y-auto hidden md:flex flex-col shadow-sm">
+        <div class="p-6 border-b border-warm-200">
+            <h1 class="text-xl font-bold text-accent-dark tracking-tight">KNLVN Tuần 7</h1>
+            <p class="text-sm text-warm-500 mt-1">Đánh Giá Chéo Vòng Tròn</p>
+        </div>
+        <ul class="flex flex-col py-4" id="nav-menu">
+            <li><a href="#tong-quan" class="nav-link active block py-3 px-6 text-warm-800 hover:bg-warm-50 transition-colors">📊 Tổng Quan & Tổ Chức</a></li>
+            <li><a href="#kich-ban" class="nav-link block py-3 px-6 text-warm-800 hover:bg-warm-50 transition-colors">⏱️ Kịch Bản 120 Phút</a></li>
+            <li><a href="#vai-tro" class="nav-link block py-3 px-6 text-warm-800 hover:bg-warm-50 transition-colors">👥 Vai Trò & Nhiệm Vụ</a></li>
+            <li><a href="#tieu-chi" class="nav-link block py-3 px-6 text-warm-800 hover:bg-warm-50 transition-colors">⚖️ Tiêu Chí & Rubric</a></li>
+            <li><a href="#bieu-mau" class="nav-link block py-3 px-6 text-warm-800 hover:bg-warm-50 transition-colors">📝 Biểu Mẫu Chuẩn</a></li>
+            <li><a href="#cham-diem" class="nav-link block py-3 px-6 text-teal font-bold bg-teal-50 hover:bg-teal-100 transition-colors">📱 Chấm Điểm Trực Tiếp</a></li>
+        </ul>
+        <div class="mt-auto p-6 bg-warm-50 border-t border-warm-200 text-xs text-warm-500">
+            Dành cho 10 Nhóm<br>Thời lượng: 120 Phút
+        </div>
+    </nav>
+
+    <!-- BOTTOM NAV MOBILE -->
+    <div class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-warm-200 z-40 flex justify-between shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe overflow-x-auto">
+        <a href="#tong-quan" class="p-3 px-4 text-center text-warm-800 text-xl hover:text-accent shrink-0">📊</a>
+        <a href="#kich-ban" class="p-3 px-4 text-center text-warm-800 text-xl hover:text-accent shrink-0">⏱️</a>
+        <a href="#vai-tro" class="p-3 px-4 text-center text-warm-800 text-xl hover:text-accent shrink-0">👥</a>
+        <a href="#tieu-chi" class="p-3 px-4 text-center text-warm-800 text-xl hover:text-accent shrink-0">⚖️</a>
+        <a href="#bieu-mau" class="p-3 px-4 text-center text-warm-800 text-xl hover:text-accent shrink-0">📝</a>
+        <a href="#cham-diem" class="p-3 px-4 text-center text-teal text-xl font-bold bg-teal-50 shrink-0">📱</a>
+    </div>
+
+    <main class="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto pb-24 md:pb-12">
+        
+        <header class="mb-10 md:hidden">
+            <h1 class="text-2xl font-bold text-accent-dark">KNLVN Tuần 7</h1>
+            <p class="text-warm-500">Hướng Dẫn & Đánh Giá Chéo</p>
+        </header>
+
+        <!-- SECTION: TỔNG QUAN -->
+        <section id="tong-quan" class="mb-16 scroll-mt-8">
+            <h2 class="text-3xl font-bold text-warm-900 mb-4 border-b-2 border-accent inline-block pb-2">Tổng Quan & Tổ Chức Lớp Học</h2>
+            <p class="text-lg text-warm-800 mb-8 leading-relaxed">
+                Lớp học sẽ được chia thành <strong>10 khu vực (Trạm)</strong> cố định tương ứng với 10 nhóm. Hoạt động đánh giá diễn ra theo cơ chế vòng tròn: Nhóm 1 đánh giá Nhóm 2 ➔ Nhóm 2 đánh giá Nhóm 3 ➔ ... ➔ Nhóm 10 đánh giá Nhóm 1.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-warm-200">
+                    <h3 class="text-xl font-semibold mb-4 text-teal flex items-center">⚙️ Cơ Chế Hoạt Động</h3>
+                    <ul class="space-y-4 text-warm-800">
+                        <li class="flex items-start">
+                            <span class="mr-3 text-accent text-xl">▪</span>
+                            <div><strong>Quy mô:</strong> 10 Nhóm (Mỗi nhóm ~10 thành viên).</div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-3 text-accent text-xl">▪</span>
+                            <div><strong>Thời gian:</strong> 7h30 - 9h30 (120 phút liên tục).</div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-3 text-accent text-xl">▪</span>
+                            <div><strong>Mục tiêu:</strong> Đánh giá tiến độ thực tế, phát hiện rủi ro và rèn luyện tư duy phản biện.</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-warm-200">
+                    <h3 class="text-xl font-semibold mb-4 text-teal flex items-center">⚔️ Phân Tách Lực Lượng</h3>
+                    <p class="text-sm text-warm-500 mb-4">Tại mỗi trạm, mỗi nhóm BẮT BUỘC chia làm 2 ban hoạt động ĐỒNG THỜI:</p>
+                    <div class="space-y-4">
+                        <div class="p-4 border-l-4 border-accent bg-warm-50 rounded-r-lg">
+                            <h4 class="font-bold text-accent-dark">🛡️ Ban Bảo Vệ (3-4 người)</h4>
+                            <p class="text-sm mt-1">Ngồi <strong>cố định</strong> tại Trạm của nhóm mình. Mở sẵn laptop, tài liệu, minh chứng dự án. Trả lời chất vấn của nhóm bạn.</p>
+                        </div>
+                        <div class="p-4 border-l-4 border-teal bg-teal-50/30 rounded-r-lg">
+                            <h4 class="font-bold text-teal">🔍 Ban Kiểm Toán (6-7 người)</h4>
+                            <p class="text-sm mt-1">Sử dụng điện thoại/laptop, <strong>di chuyển</strong> sang Trạm kế tiếp để phỏng vấn, kiểm tra tiến độ và chấm điểm trực tiếp.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: KỊCH BẢN -->
+        <section id="kich-ban" class="mb-16 scroll-mt-8">
+            <h2 class="text-3xl font-bold text-warm-900 mb-4 border-b-2 border-accent inline-block pb-2">Kịch Bản 120 Phút</h2>
+            <p class="text-lg text-warm-800 mb-8 leading-relaxed">
+                Đảm bảo tuân thủ nghiêm ngặt khung thời gian dưới đây để 10 trạm có thể vận hành đồng bộ, không bị "vỡ trận".
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 relative">
+                    <div class="absolute left-4 md:left-8 top-0 bottom-0 w-0.5 bg-warm-200"></div>
+                    
+                    <div class="relative pl-12 md:pl-20 mb-8">
+                        <div class="absolute left-2 md:left-6 w-5 h-5 rounded-full bg-accent border-4 border-white top-1 shadow-md"></div>
+                        <span class="inline-block px-3 py-1 bg-warm-100 text-warm-800 rounded-full text-xs font-bold mb-2">10 Phút (7:30 - 7:40)</span>
+                        <h3 class="text-lg font-bold text-warm-900">Bước 1: Ổn định & Phân tách</h3>
+                        <p class="text-warm-800 mt-1">Ngồi đúng 10 khu vực. Phân chia xong Ban Bảo vệ (ở lại) và Ban Kiểm toán (chuẩn bị di chuyển). Mở sẵn ứng dụng web chấm điểm.</p>
+                    </div>
+
+                    <div class="relative pl-12 md:pl-20 mb-8">
+                        <div class="absolute left-2 md:left-6 w-5 h-5 rounded-full bg-teal border-4 border-white top-1 shadow-md"></div>
+                        <span class="inline-block px-3 py-1 bg-teal-50 text-teal-800 rounded-full text-xs font-bold mb-2">60 Phút (7:40 - 8:40)</span>
+                        <h3 class="text-lg font-bold text-warm-900">Bước 2: Đánh giá chéo đồng thời</h3>
+                        <p class="text-warm-800 mt-1">10 Ban Kiểm toán đồng loạt di chuyển theo chiều kim đồng hồ. Bắt đầu chất vấn (Socratic questioning) và kiểm tra minh chứng thực tế trên máy tính của nhóm bạn.</p>
+                    </div>
+
+                    <div class="relative pl-12 md:pl-20 mb-8">
+                        <div class="absolute left-2 md:left-6 w-5 h-5 rounded-full bg-accent border-4 border-white top-1 shadow-md"></div>
+                        <span class="inline-block px-3 py-1 bg-warm-100 text-warm-800 rounded-full text-xs font-bold mb-2">20 Phút (8:40 - 9:00)</span>
+                        <h3 class="text-lg font-bold text-warm-900">Bước 3: Hội quân & Chốt điểm</h3>
+                        <p class="text-warm-800 mt-1">Ban Kiểm toán quay về Trạm gốc, họp với Ban Bảo vệ nhóm mình. Điền điểm, ghi rõ Lời khen (KEEP) và Lời khuyên (CHANGE), bấm "Gửi điểm lên hệ thống".</p>
+                    </div>
+
+                    <div class="relative pl-12 md:pl-20">
+                        <div class="absolute left-2 md:left-6 w-5 h-5 rounded-full bg-warm-800 border-4 border-white top-1 shadow-md"></div>
+                        <span class="inline-block px-3 py-1 bg-warm-200 text-warm-900 rounded-full text-xs font-bold mb-2">30 Phút (9:00 - 9:30)</span>
+                        <h3 class="text-lg font-bold text-warm-900">Bước 4: Tổng kết & Khiếu nại</h3>
+                        <p class="text-warm-800 mt-1">Giảng viên kiểm tra dữ liệu trên Google Sheets. Gọi ngẫu nhiên các nhóm báo cáo. Xử lý các tranh chấp điểm số.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-warm-200 flex flex-col justify-center items-center">
+                    <h3 class="text-center font-semibold text-warm-800 mb-2">Phân bổ 120 Phút</h3>
+                    <div class="chart-container w-full h-full min-h-[250px]">
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: VAI TRÒ & NHIỆM VỤ -->
+        <section id="vai-tro" class="mb-16 scroll-mt-8">
+            <h2 class="text-3xl font-bold text-warm-900 mb-4 border-b-2 border-accent inline-block pb-2">Vai Trò & Checklist Chuẩn Bị</h2>
+            <p class="text-lg text-warm-800 mb-8 leading-relaxed">
+                Click vào từng Tab dưới đây để xem Danh mục công việc chi tiết. Việc bám sát checklist sẽ giúp bạn không bỏ sót bất kỳ minh chứng hay bước nghiệp vụ nào.
+            </p>
+
+            <div class="bg-white rounded-xl shadow-sm border border-warm-200 overflow-hidden">
+                <div class="flex flex-col md:flex-row border-b border-warm-200 bg-warm-50">
+                    <button onclick="switchTab('defend')" id="tab-defend" class="w-full md:flex-1 py-4 text-center font-medium tab-btn active hover:bg-warm-100 transition">🛡️ Checklist Ban Bảo Vệ</button>
+                    <button onclick="switchTab('audit')" id="tab-audit" class="w-full md:flex-1 py-4 text-center font-medium tab-btn text-warm-600 hover:bg-warm-100 transition">🔍 Checklist Ban Kiểm Toán</button>
+                </div>
+
+                <!-- Tab Ban Bảo Vệ -->
+                <div id="content-defend" class="p-6 md:p-8">
+                    <p class="text-sm font-bold text-accent-dark mb-6 uppercase tracking-wider">Nhiệm vụ: Chứng minh nhóm mình ĐÃ LÀM VIỆC THỰC SỰ (Chuẩn bị trước 7h30)</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold text-warm-900 mb-3 border-l-4 border-accent pl-2">Hồ Sơ Cung Cấp Cho Đối Tác</h4>
+                            <ul class="space-y-3 text-warm-800">
+                                <li class="bg-warm-50 p-3 rounded shadow-sm border border-warm-100"><strong>1. Bảng Kế hoạch / Phân công:</strong> Thể hiện rõ hạng mục công việc, người phụ trách, deadline và trạng thái (xem Mẫu Chuẩn).</li>
+                                <li class="bg-warm-50 p-3 rounded shadow-sm border border-warm-100"><strong>2. Báo cáo tiến độ:</strong> Tóm tắt nhanh % hoàn thành, những việc trễ hạn và nguyên nhân.</li>
+                                <li class="bg-warm-50 p-3 rounded shadow-sm border border-warm-100"><strong>3. Kho minh chứng thực tế:</strong> Link Google Form, file Excel dữ liệu thô (time-stamp), link Docs bản nháp, ảnh chụp Zalo họp nhóm.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-warm-900 mb-3 border-l-4 border-accent pl-2">Checklist Hành Động</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-start cursor-pointer group p-2 hover:bg-warm-50 rounded">
+                                    <input type="checkbox" class="mt-1 mr-3 w-5 h-5 accent-accent shrink-0" onclick="toggleCheck(this)">
+                                    <span class="checklist-item transition-all">Mở sẵn ít nhất 1-2 laptop trên bàn để show tài liệu liên tục.</span>
+                                </label>
+                                <label class="flex items-start cursor-pointer group p-2 hover:bg-warm-50 rounded">
+                                    <input type="checkbox" class="mt-1 mr-3 w-5 h-5 accent-accent shrink-0" onclick="toggleCheck(this)">
+                                    <span class="checklist-item transition-all">Bảng Kế Hoạch đã cập nhật đúng tiến độ, gắn đủ link minh chứng.</span>
+                                </label>
+                                <label class="flex items-start cursor-pointer group p-2 hover:bg-warm-50 rounded">
+                                    <input type="checkbox" class="mt-1 mr-3 w-5 h-5 accent-accent shrink-0" onclick="toggleCheck(this)">
+                                    <span class="checklist-item transition-all">Mở quyền truy cập (Viewer/Editor) cho TẤT CẢ các link Docs/Sheets.</span>
+                                </label>
+                                <label class="flex items-start cursor-pointer group p-2 hover:bg-warm-50 rounded">
+                                    <input type="checkbox" class="mt-1 mr-3 w-5 h-5 accent-accent shrink-0" onclick="toggleCheck(this)">
+                                    <span class="checklist-item transition-all">Thống nhất nội bộ: Ai sẽ trả lời mảng kỹ thuật/khảo sát, ai trả lời mảng nội dung.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Ban Kiểm Toán -->
+                <div id="content-audit" class="p-6 md:p-8 hidden">
+                    <p class="text-sm font-bold text-teal mb-6 uppercase tracking-wider">Nhiệm vụ: Tìm ra sự thật đằng sau những lời báo cáo (7h40 - 8h40)</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold text-warm-900 mb-3 border-l-4 border-teal pl-2">Phương Pháp Chống Gian Lận</h4>
+                            <ul class="space-y-3 text-warm-800">
+                                <li class="bg-teal-50/30 p-3 rounded shadow-sm border border-teal-100"><strong>1. Truy vết thời gian (Time-stamp):</strong> Yêu cầu nhóm bạn mở <em>Lịch sử chỉnh sửa (Version History)</em> trên Docs/Sheets để xem tài liệu làm rải rác hay làm đối phó đêm qua.</li>
+                                <li class="bg-teal-50/30 p-3 rounded shadow-sm border border-teal-100"><strong>2. Phỏng vấn chéo cá nhân:</strong> Tuyệt đối không chỉ hỏi Nhóm trưởng. Chỉ định ngẫu nhiên thành viên theo Bảng phân công để kiểm tra độ hiểu việc.</li>
+                                <li class="bg-teal-50/30 p-3 rounded shadow-sm border border-teal-100"><strong>3. Kiểm tra dữ liệu thô:</strong> Xem ngày giờ trên ảnh chụp Zalo, kiểm tra dấu hiệu đạo văn, lạm dụng AI.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-warm-900 mb-3 border-l-4 border-teal pl-2">Nghiệp vụ chất vấn</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-start cursor-pointer group p-2 hover:bg-warm-50 rounded">
+                                    <input type="checkbox" class="mt-1 mr-3 w-5 h-5 accent-teal shrink-0" onclick="toggleCheck(this)">
+                                    <span class="checklist-item transition-all">Yêu cầu tóm tắt nhanh cam kết và kết quả (3 phút đầu).</span>
+                                </label>
+                                <label class="flex items-start cursor-pointer group p-2 hover:bg-warm-50 rounded">
+                                    <input type="checkbox" class="mt-1 mr-3 w-5 h-5 accent-teal shrink-0" onclick="toggleCheck(this)">
+                                    <span class="checklist-item transition-all">Đối chiếu cột Deadline và Trạng thái trên Bảng kế hoạch.</span>
+                                </label>
+                                <label class="flex items-start cursor-pointer group p-2 hover:bg-warm-50 rounded">
+                                    <input type="checkbox" class="mt-1 mr-3 w-5 h-5 accent-teal shrink-0" onclick="toggleCheck(this)">
+                                    <span class="checklist-item transition-all">Socratic: "Bạn A phụ trách Form này, hãy mở lên và giải thích tại sao lại hỏi câu số 3?"</span>
+                                </label>
+                                <label class="flex items-start cursor-pointer group p-2 hover:bg-warm-50 rounded">
+                                    <input type="checkbox" class="mt-1 mr-3 w-5 h-5 accent-teal shrink-0" onclick="toggleCheck(this)">
+                                    <span class="checklist-item transition-all">Hỏi rủi ro: "Tuần qua nhóm bạn gặp khó khăn gì? Đã tự giải quyết thế nào?"</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: TIÊU CHÍ -->
+        <section id="tieu-chi" class="mb-16 scroll-mt-8">
+            <h2 class="text-3xl font-bold text-warm-900 mb-4 border-b-2 border-accent inline-block pb-2">Tiêu Chí & Rubric Đánh Giá Chung</h2>
+            <p class="text-lg text-warm-800 mb-8 leading-relaxed">
+                Ban Kiểm Toán không đánh giá dựa trên lời nói suông mà trên <strong>Kết quả thực tế so với Kế hoạch</strong>. Các tiêu chí được phân bổ trọng số khắt khe nhằm đảm bảo tính minh bạch, trong đó "Minh chứng" chiếm tỷ trọng cao nhất.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-warm-200 flex justify-center items-center">
+                    <div class="chart-container w-full h-full min-h-[300px]">
+                        <canvas id="criteriaChart"></canvas>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 flex flex-col justify-center space-y-4">
+                    <div class="p-4 bg-white border border-warm-200 rounded-lg flex items-center shadow-sm">
+                        <div class="w-12 h-12 bg-accent text-white rounded-full flex items-center justify-center font-bold text-xl mr-4 shrink-0">40%</div>
+                        <div>
+                            <h4 class="font-bold text-warm-900 text-lg">1. Chất lượng minh chứng (Max 4đ)</h4>
+                            <p class="text-warm-600 text-sm">Đánh giá xem minh chứng có thật không, có dấu hiệu làm đối phó hay đạo văn không.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white border border-warm-200 rounded-lg flex items-center shadow-sm">
+                        <div class="w-12 h-12 bg-teal text-white rounded-full flex items-center justify-center font-bold text-xl mr-4 shrink-0">30%</div>
+                        <div>
+                            <h4 class="font-bold text-warm-900 text-lg">2. Tiến độ công việc (Max 3đ)</h4>
+                            <p class="text-warm-600 text-sm">So sánh cam kết (kế hoạch tuần trước) và thực tế hoàn thành (hiện tại).</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white border border-warm-200 rounded-lg flex items-center shadow-sm">
+                        <div class="w-12 h-12 bg-warm-400 text-white rounded-full flex items-center justify-center font-bold text-xl mr-4 shrink-0">20%</div>
+                        <div>
+                            <h4 class="font-bold text-warm-900 text-lg">3. Sự phối hợp & Trách nhiệm (Max 2đ)</h4>
+                            <p class="text-warm-600 text-sm">Mọi thành viên có nắm việc không, hay khối lượng công việc đang dồn hết vào Nhóm trưởng?</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white border border-warm-200 rounded-lg flex items-center shadow-sm">
+                        <div class="w-12 h-12 bg-warm-800 text-white rounded-full flex items-center justify-center font-bold text-xl mr-4 shrink-0">10%</div>
+                        <div>
+                            <h4 class="font-bold text-warm-900 text-lg">4. Phản ứng với rủi ro (Max 1đ)</h4>
+                            <p class="text-warm-600 text-sm">Đánh giá tư duy nhạy bén, khả năng thích ứng khi gặp khó khăn.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Rubric Table -->
+            <div class="bg-white rounded-xl shadow-sm border border-warm-200 overflow-x-auto">
+                <table class="w-full text-left min-w-[800px]">
+                    <thead>
+                        <tr class="bg-warm-100 text-warm-900 text-sm uppercase">
+                            <th class="p-4 font-bold border-b border-warm-200 w-1/4">Tiêu chí đánh giá</th>
+                            <th class="p-4 font-bold border-b border-warm-200 w-1/4">Mức Tốt</th>
+                            <th class="p-4 font-bold border-b border-warm-200 w-1/4">Mức Khá / TB</th>
+                            <th class="p-4 font-bold border-b border-warm-200 w-1/4">Mức Kém</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm text-warm-800 divide-y divide-warm-100">
+                        <tr class="hover:bg-warm-50 transition-colors">
+                            <td class="p-4 font-bold text-accent-dark">1. Minh chứng<br><span class="font-normal text-xs text-warm-500">(Max 4.0đ)</span></td>
+                            <td class="p-4">Minh chứng đầy đủ, rõ ràng, chất lượng tốt (không đạo văn, data thật, có lịch sử làm việc).<br><span class="font-bold text-accent">3.5 - 4.0 điểm</span></td>
+                            <td class="p-4">Có minh chứng nhưng còn sơ sài, thiếu logic hoặc có sai sót nhỏ.<br><span class="font-bold text-accent">2.0 - 3.0 điểm</span></td>
+                            <td class="p-4">Không có minh chứng gốc, làm đối phó, có dấu hiệu làm giả, gian lận.<br><span class="font-bold text-red-600">0 - 1.5 điểm</span></td>
+                        </tr>
+                        <tr class="hover:bg-warm-50 transition-colors">
+                            <td class="p-4 font-bold text-accent-dark">2. Tiến độ<br><span class="font-normal text-xs text-warm-500">(Max 3.0đ)</span></td>
+                            <td class="p-4">Hoàn thành 100% công việc đã cam kết trong kế hoạch tuần qua.<br><span class="font-bold text-accent">2.5 - 3.0 điểm</span></td>
+                            <td class="p-4">Hoàn thành 70-90% công việc. Có lý do chậm trễ hợp lý và có báo trước.<br><span class="font-bold text-accent">1.5 - 2.0 điểm</span></td>
+                            <td class="p-4">Hoàn thành dưới 50% hoặc hoàn toàn không có kế hoạch công việc rõ ràng.<br><span class="font-bold text-red-600">0 - 1.0 điểm</span></td>
+                        </tr>
+                        <tr class="hover:bg-warm-50 transition-colors">
+                            <td class="p-4 font-bold text-accent-dark">3. Phối hợp<br><span class="font-normal text-xs text-warm-500">(Max 2.0đ)</span></td>
+                            <td class="p-4">Mọi thành viên đều nắm việc. Trả lời trôi chảy khi bị chỉ định chất vấn ngẫu nhiên.<br><span class="font-bold text-accent">1.5 - 2.0 điểm</span></td>
+                            <td class="p-4">Nhóm trưởng/ 1 vài cá nhân gánh team. Thành viên khác ấp úng, mơ hồ.<br><span class="font-bold text-accent">1.0 điểm</span></td>
+                            <td class="p-4">Phân công không rõ ràng. Thành viên không biết mình làm nhiệm vụ gì.<br><span class="font-bold text-red-600">0 - 0.5 điểm</span></td>
+                        </tr>
+                        <tr class="hover:bg-warm-50 transition-colors">
+                            <td class="p-4 font-bold text-accent-dark">4. Rủi ro<br><span class="font-normal text-xs text-warm-500">(Max 1.0đ)</span></td>
+                            <td class="p-4">Chủ động nhận diện khó khăn và có giải pháp khắc phục thực tế, linh hoạt.<br><span class="font-bold text-accent">1.0 điểm</span></td>
+                            <td class="p-4">Có nhận diện khó khăn nhưng chưa có biện pháp khắc phục triệt để.<br><span class="font-bold text-accent">0.5 điểm</span></td>
+                            <td class="p-4">Thụ động, đổ lỗi cho ngoại cảnh. Không có phương án dự phòng.<br><span class="font-bold text-red-600">0 điểm</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION: BIỂU MẪU CHUẨN -->
+        <section id="bieu-mau" class="mb-16 scroll-mt-8">
+            <h2 class="text-3xl font-bold text-warm-900 mb-4 border-b-2 border-accent inline-block pb-2">Bảng Kế Hoạch Dự Án Tối Thiểu</h2>
+            <p class="text-lg text-warm-800 mb-8 leading-relaxed">
+                Để Ban Kiểm toán có thể làm việc nhanh chóng, Ban Bảo Vệ <strong>BẮT BUỘC</strong> phải hệ thống hóa tiến độ công việc tuần của mình (trên Excel, Sheets hoặc Word) với cấu trúc tối thiểu 6 cột như mẫu dưới đây.
+            </p>
+
+            <div class="bg-white rounded-xl shadow-sm border border-warm-200 p-1 overflow-x-auto">
+                <table class="w-full text-left min-w-[800px] border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-warm-800 text-white">
+                            <th class="p-3 border border-warm-600 text-center w-12">STT</th>
+                            <th class="p-3 border border-warm-600">Tên công việc / Hạng mục</th>
+                            <th class="p-3 border border-warm-600 w-36">Người phụ trách</th>
+                            <th class="p-3 border border-warm-600 w-28 text-center">Deadline</th>
+                            <th class="p-3 border border-warm-600 w-48">Trạng thái (Tuần 7)</th>
+                            <th class="p-3 border border-warm-600">Link Minh chứng / Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-warm-800 bg-white divide-y divide-warm-200">
+                        <tr>
+                            <td class="p-3 border-x border-warm-200 text-center">1</td>
+                            <td class="p-3 border-x border-warm-200 font-medium">Thiết kế Google Form khảo sát</td>
+                            <td class="p-3 border-x border-warm-200">Nguyễn Văn A</td>
+                            <td class="p-3 border-x border-warm-200 text-center">15/03/2026</td>
+                            <td class="p-3 border-x border-warm-200 text-teal font-bold">Đã hoàn thành 100%</td>
+                            <td class="p-3 border-x border-warm-200 text-blue-600 hover:underline cursor-pointer">[Link Google Form gốc]</td>
+                        </tr>
+                        <tr class="bg-warm-50">
+                            <td class="p-3 border-x border-warm-200 text-center">2</td>
+                            <td class="p-3 border-x border-warm-200 font-medium">Rải link và thu thập dữ liệu</td>
+                            <td class="p-3 border-x border-warm-200">Trần Thị B, Lê C</td>
+                            <td class="p-3 border-x border-warm-200 text-center">20/03/2026</td>
+                            <td class="p-3 border-x border-warm-200 text-accent font-bold">Đang làm (40/100 mẫu)</td>
+                            <td class="p-3 border-x border-warm-200 text-blue-600 hover:underline cursor-pointer">[Link file Excel dữ liệu thô]</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border-x border-warm-200 text-center">3</td>
+                            <td class="p-3 border-x border-warm-200 font-medium">Viết Chương 1: Cơ sở lý thuyết</td>
+                            <td class="p-3 border-x border-warm-200">Phạm Văn D</td>
+                            <td class="p-3 border-x border-warm-200 text-center">22/03/2026</td>
+                            <td class="p-3 border-x border-warm-200 text-teal font-bold">Đã xong, đang chờ duyệt</td>
+                            <td class="p-3 border-x border-warm-200 text-blue-600 hover:underline cursor-pointer">[Link Google Docs bài viết]</td>
+                        </tr>
+                        <tr class="bg-warm-50">
+                            <td class="p-3 border-x border-warm-200 text-center">4</td>
+                            <td class="p-3 border-x border-warm-200 font-medium">Họp nhóm thống nhất sườn báo cáo</td>
+                            <td class="p-3 border-x border-warm-200">Cả nhóm</td>
+                            <td class="p-3 border-x border-warm-200 text-center">18/03/2026</td>
+                            <td class="p-3 border-x border-warm-200 text-red-600 font-bold">Trễ hạn (Dời sang 23/03)</td>
+                            <td class="p-3 border-x border-warm-200 text-blue-600 hover:underline cursor-pointer">[Link Biên bản / Ảnh Zalo]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION: CHẤM ĐIỂM TRỰC TIẾP -->
+        <section id="cham-diem" class="mb-16 scroll-mt-8">
+            <h2 class="text-3xl font-bold text-teal mb-4 border-b-2 border-teal inline-block pb-2">📱 Web App: Chấm Điểm Trực Tiếp</h2>
+            <p class="text-warm-800 mb-6">Ban Kiểm Toán sử dụng biểu mẫu này để rà soát checklist, chọn điểm (bước nhảy 0.25) và nộp kết quả về máy chủ. Bạn có thể xuất PDF để lưu về thiết bị làm bằng chứng đối chiếu.</p>
+
+            <div id="export-pdf-area" class="bg-white rounded-xl shadow-md border border-warm-200 p-5 md:p-8">
+                
+                <div class="text-center mb-6 border-b border-warm-200 pb-4">
+                    <h3 class="text-2xl font-bold text-warm-900">PHIẾU ĐÁNH GIÁ CHÉO DỰ ÁN</h3>
+                    <p class="text-warm-500">Môn học: Kỹ năng làm việc nhóm và học tập</p>
+                </div>
+
+                <!-- THÔNG TIN CHUNG -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div>
+                        <label class="block text-sm font-bold text-warm-700 mb-1">Mã Lớp Học phần:</label>
+                        <input type="text" id="inp_lop" placeholder="VD: 25KDL1" class="w-full p-3 border border-warm-300 rounded-lg focus:ring-2 focus:ring-teal outline-none transition bg-warm-50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-warm-700 mb-1">Ban Kiểm Toán (Nhóm đánh giá):</label>
+                        <select id="inp_nhom_cham" class="w-full p-3 border border-warm-300 rounded-lg focus:ring-2 focus:ring-teal outline-none transition bg-warm-50">
+                            <option value="">-- Chọn nhóm của bạn --</option>
+                            <option value="1">Nhóm 1</option><option value="2">Nhóm 2</option><option value="3">Nhóm 3</option><option value="4">Nhóm 4</option><option value="5">Nhóm 5</option>
+                            <option value="6">Nhóm 6</option><option value="7">Nhóm 7</option><option value="8">Nhóm 8</option><option value="9">Nhóm 9</option><option value="10">Nhóm 10</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-warm-700 mb-1">Ban Bảo Vệ (Nhóm bị kiểm tra):</label>
+                        <select id="inp_nhom_bi_cham" class="w-full p-3 border border-warm-300 rounded-lg focus:ring-2 focus:ring-accent outline-none transition bg-orange-50 text-accent-dark font-bold">
+                            <option value="">-- Chọn nhóm đang bị kiểm tra --</option>
+                            <option value="1">Nhóm 1</option><option value="2">Nhóm 2</option><option value="3">Nhóm 3</option><option value="4">Nhóm 4</option><option value="5">Nhóm 5</option>
+                            <option value="6">Nhóm 6</option><option value="7">Nhóm 7</option><option value="8">Nhóm 8</option><option value="9">Nhóm 9</option><option value="10">Nhóm 10</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- CHECKLIST TRỰC TIẾP -->
+                <div class="mb-8 bg-warm-50 p-4 rounded-lg border border-warm-200">
+                    <h4 class="font-bold text-warm-900 mb-3 flex items-center">🔍 Trình Tự Nghiệp Vụ <span class="text-xs font-normal text-warm-500 ml-2">(Tích chọn khi làm xong)</span></h4>
+                    <div class="space-y-3">
+                        <label class="flex items-start cursor-pointer group">
+                            <input type="checkbox" class="mt-1.5 w-5 h-5 accent-teal rounded shrink-0" onclick="toggleCheck(this)">
+                            <span class="ml-3 text-warm-800 text-sm leading-tight transition-all checklist-item">Yêu cầu Ban Bảo vệ tóm tắt nhanh cam kết và kết quả (trong 3 phút).</span>
+                        </label>
+                        <label class="flex items-start cursor-pointer group">
+                            <input type="checkbox" class="mt-1.5 w-5 h-5 accent-teal rounded shrink-0" onclick="toggleCheck(this)">
+                            <span class="ml-3 text-warm-800 text-sm leading-tight transition-all checklist-item">Đối chiếu cột Deadline và Trạng thái trên Bảng kế hoạch.</span>
+                        </label>
+                        <label class="flex items-start cursor-pointer group">
+                            <input type="checkbox" class="mt-1.5 w-5 h-5 accent-teal rounded shrink-0" onclick="toggleCheck(this)">
+                            <span class="ml-3 text-warm-800 text-sm leading-tight transition-all checklist-item">Bấm ngẫu nhiên 2-3 link minh chứng. Kiểm tra Lịch sử chỉnh sửa (Version History) chống làm giả.</span>
+                        </label>
+                        <label class="flex items-start cursor-pointer group">
+                            <input type="checkbox" class="mt-1.5 w-5 h-5 accent-teal rounded shrink-0" onclick="toggleCheck(this)">
+                            <span class="ml-3 text-warm-800 text-sm leading-tight transition-all checklist-item">Socratic: Chỉ định ngẫu nhiên 1 bạn (không phải nhóm trưởng) giải thích chi tiết file do bạn đó làm.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- BẢNG CHẤM ĐIỂM -->
+                <h4 class="font-bold text-warm-900 mb-4 border-b border-warm-200 pb-2">⚖️ Điểm Đánh Giá</h4>
+                <div class="space-y-5 mb-8">
+                    
+                    <!-- Tiêu chí 1 -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white border border-warm-200 rounded-lg shadow-sm hover:border-accent transition-colors">
+                        <div class="mb-3 md:mb-0 md:w-2/3">
+                            <div class="font-bold text-accent-dark">1. Chất lượng minh chứng (Max 4.0đ)</div>
+                            <div class="text-xs text-warm-500 mt-1">Data thật, không đạo văn, có lịch sử làm việc rõ ràng. Trừ nặng điểm nếu có dấu hiệu đối phó.</div>
+                        </div>
+                        <select id="score_1" onchange="calculateTotal()" class="w-full md:w-32 p-2 border-2 border-accent rounded-lg text-center font-bold text-lg text-accent-dark bg-orange-50 appearance-none outline-none cursor-pointer"></select>
+                    </div>
+
+                    <!-- Tiêu chí 2 -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white border border-warm-200 rounded-lg shadow-sm hover:border-teal transition-colors">
+                        <div class="mb-3 md:mb-0 md:w-2/3">
+                            <div class="font-bold text-teal">2. Tiến độ công việc (Max 3.0đ)</div>
+                            <div class="text-xs text-warm-500 mt-1">Hoàn thành đúng 100% công việc đã cam kết trong tuần. Hạ điểm nếu trễ không báo trước.</div>
+                        </div>
+                        <select id="score_2" onchange="calculateTotal()" class="w-full md:w-32 p-2 border-2 border-teal rounded-lg text-center font-bold text-lg text-teal-700 bg-teal-50 appearance-none outline-none cursor-pointer"></select>
+                    </div>
+
+                    <!-- Tiêu chí 3 -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white border border-warm-200 rounded-lg shadow-sm hover:border-warm-400 transition-colors">
+                        <div class="mb-3 md:mb-0 md:w-2/3">
+                            <div class="font-bold text-warm-700">3. Sự phối hợp & Trách nhiệm (Max 2.0đ)</div>
+                            <div class="text-xs text-warm-500 mt-1">Mọi thành viên nắm việc, trả lời trôi chảy khi bị hỏi ngẫu nhiên. Tránh tình trạng gánh team.</div>
+                        </div>
+                        <select id="score_3" onchange="calculateTotal()" class="w-full md:w-32 p-2 border-2 border-warm-400 rounded-lg text-center font-bold text-lg text-warm-800 bg-warm-50 appearance-none outline-none cursor-pointer"></select>
+                    </div>
+
+                    <!-- Tiêu chí 4 -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white border border-warm-200 rounded-lg shadow-sm hover:border-warm-400 transition-colors">
+                        <div class="mb-3 md:mb-0 md:w-2/3">
+                            <div class="font-bold text-warm-700">4. Phản ứng với rủi ro (Max 1.0đ)</div>
+                            <div class="text-xs text-warm-500 mt-1">Chủ động nhận diện khó khăn và có giải pháp khắc phục linh hoạt thay vì đổ lỗi ngoại cảnh.</div>
+                        </div>
+                        <select id="score_4" onchange="calculateTotal()" class="w-full md:w-32 p-2 border-2 border-warm-400 rounded-lg text-center font-bold text-lg text-warm-800 bg-warm-50 appearance-none outline-none cursor-pointer"></select>
+                    </div>
+
+                </div>
+
+                <!-- TỔNG ĐIỂM -->
+                <div class="flex items-center justify-between bg-warm-800 text-white p-5 rounded-xl mb-8 shadow-md">
+                    <span class="text-xl font-bold uppercase tracking-wider">Tổng Điểm:</span>
+                    <span class="text-3xl font-black"><span id="total_score_display">0.00</span><span class="text-xl text-warm-400">/10</span></span>
+                </div>
+
+                <!-- NHẬN XÉT -->
+                <div class="space-y-4 mb-8">
+                    <div>
+                        <label class="block font-bold text-teal mb-2 flex items-center">🟢 KEEP (Điểm sáng cần phát huy):</label>
+                        <textarea id="inp_keep" rows="2" class="w-full p-3 border border-warm-300 rounded-lg focus:ring-2 focus:ring-teal outline-none" placeholder="Ghi nhận điểm tốt của nhóm bạn..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-red-500 mb-2 flex items-center">🔴 CHANGE (Điểm yếu cần khắc phục gấp):</label>
+                        <textarea id="inp_change" rows="2" class="w-full p-3 border border-warm-300 rounded-lg focus:ring-2 focus:ring-red-400 outline-none" placeholder="Nhóm bạn đang bị hổng phần nào, cần sửa gấp..."></textarea>
+                    </div>
+                </div>
+
+            </div> <!-- Kết thúc khu vực in PDF -->
+
+            <!-- ACTION BUTTONS -->
+            <div class="mt-6 flex flex-col md:flex-row gap-4">
+                <button onclick="exportToPDF()" class="flex-1 py-4 bg-warm-200 hover:bg-warm-300 text-warm-900 font-bold rounded-xl shadow-sm transition flex items-center justify-center">
+                    <span class="text-xl mr-2">📄</span> XUẤT LƯU PDF (DỰ PHÒNG)
+                </button>
+                <button id="btn_submit" onclick="submitToGoogleSheet()" class="flex-1 py-4 bg-accent hover:bg-accent-dark text-white font-bold rounded-xl shadow-md transition flex items-center justify-center">
+                    <span class="text-xl mr-2">🚀</span> GỬI ĐIỂM LÊN HỆ THỐNG
+                </button>
+            </div>
+
+            <!-- Modal Thông Báo -->
+            <div id="statusModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 px-4">
+                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-md text-center transform scale-95 transition-transform duration-300">
+                    <div id="modalIcon" class="text-5xl mb-4">⏳</div>
+                    <h3 id="modalTitle" class="text-xl font-bold text-warm-900 mb-2">Đang gửi dữ liệu...</h3>
+                    <p id="modalDesc" class="text-warm-600 mb-6">Vui lòng không đóng trình duyệt.</p>
+                    <button id="modalBtn" onclick="closeModal()" class="hidden w-full py-3 bg-warm-200 text-warm-800 font-bold rounded-lg hover:bg-warm-300">Đóng</button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // --- 1. HÀM GIAO DIỆN CƠ BẢN ---
+        function switchTab(tabId) {
+            document.getElementById('tab-defend').classList.remove('active', 'text-accent');
+            document.getElementById('tab-defend').classList.add('text-warm-600');
+            document.getElementById('tab-audit').classList.remove('active', 'text-accent');
+            document.getElementById('tab-audit').classList.add('text-warm-600');
+            
+            document.getElementById('content-defend').classList.add('hidden');
+            document.getElementById('content-audit').classList.add('hidden');
+
+            document.getElementById('tab-' + tabId).classList.add('active', 'text-accent');
+            document.getElementById('tab-' + tabId).classList.remove('text-warm-600');
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+        }
+
+        function toggleCheck(checkbox) {
+            // Find the next sibling span with class 'checklist-item'
+            let sibling = checkbox.nextElementSibling;
+            while(sibling && !sibling.classList.contains('checklist-item')) {
+                sibling = sibling.nextElementSibling;
+            }
+            if(sibling) {
+                if (checkbox.checked) {
+                    sibling.classList.add('checked');
+                } else {
+                    sibling.classList.remove('checked');
+                }
+            }
+        }
+
+        // --- 2. KHỞI TẠO CÁC DROPDOWN CHẤM ĐIỂM (Bước nhảy 0.25) ---
+        function populateScoreDropdown(elementId, maxScore) {
+            const select = document.getElementById(elementId);
+            let html = '';
+            for (let i = maxScore; i >= 0; i -= 0.25) {
+                html += `<option value="${i}">+ ${i} đ</option>`;
+            }
+            select.innerHTML = html;
+            select.value = "0"; // Default là 0 để sinh viên phải tự chọn
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup score dropdowns
+            populateScoreDropdown('score_1', 4.0);
+            populateScoreDropdown('score_2', 3.0);
+            populateScoreDropdown('score_3', 2.0);
+            populateScoreDropdown('score_4', 1.0);
+            calculateTotal();
+
+            // Khởi tạo Biểu đồ Kịch Bản (Doughnut)
+            const ctxTime = document.getElementById('timeChart').getContext('2d');
+            new Chart(ctxTime, { 
+                type: 'doughnut', 
+                data: { 
+                    labels: ['Chuẩn bị', 'Đánh giá chéo', 'Hội quân', 'Tổng kết'], 
+                    datasets: [{ 
+                        data: [10, 60, 20, 30], 
+                        backgroundColor: ['#E7E5E4', '#4A7C76', '#C17A3D', '#292524'],
+                        borderWidth: 2, borderColor: '#ffffff'
+                    }] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Inter' } } }
+                    }
+                } 
+            });
+            
+            // Khởi tạo Biểu đồ Tiêu chí (Polar Area)
+            const ctxCriteria = document.getElementById('criteriaChart').getContext('2d');
+            new Chart(ctxCriteria, { 
+                type: 'polarArea', 
+                data: { 
+                    labels: ['Minh chứng (40%)', 'Tiến độ (30%)', 'Phối hợp (20%)', 'Rủi ro (10%)'], 
+                    datasets: [{ 
+                        data: [40, 30, 20, 10], 
+                        backgroundColor: ['rgba(193, 122, 61, 0.8)', 'rgba(74, 124, 118, 0.8)', 'rgba(168, 162, 158, 0.8)', 'rgba(41, 37, 36, 0.8)'],
+                        borderWidth: 1, borderColor: '#ffffff'
+                    }] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { r: { ticks: { display: false } } },
+                    plugins: {
+                        legend: { position: 'right', labels: { font: { family: 'Inter' } } }
+                    }
+                } 
+            });
+        });
+
+        // Tính tổng điểm
+        function calculateTotal() {
+            const s1 = parseFloat(document.getElementById('score_1').value) || 0;
+            const s2 = parseFloat(document.getElementById('score_2').value) || 0;
+            const s3 = parseFloat(document.getElementById('score_3').value) || 0;
+            const s4 = parseFloat(document.getElementById('score_4').value) || 0;
+            const total = s1 + s2 + s3 + s4;
+            document.getElementById('total_score_display').innerText = total.toFixed(2);
+        }
+
+        // Điều hướng active menu (Scroll Spy)
+        const navLinks = document.querySelectorAll('.nav-link');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            document.querySelectorAll('section').forEach(section => {
+                if (scrollY >= section.offsetTop - 100) current = section.getAttribute('id');
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) link.classList.add('active');
+            });
+        });
+
+        // --- 3. TÍNH NĂNG XUẤT PDF LƯU ĐIỆN THOẠI ---
+        function exportToPDF() {
+            const element = document.getElementById('export-pdf-area');
+            const nhomBiCham = document.getElementById('inp_nhom_bi_cham').value || "X";
+            
+            const opt = {
+                margin:       [0.5, 0.5, 0.5, 0.5],
+                filename:     `Phieu_Cham_Diem_Nhom_${nhomBiCham}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            showModal('⏳', 'Đang tạo file PDF...', 'Hệ thống đang xuất file, vui lòng đợi giây lát.', false);
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                showModal('✅', 'Xuất PDF Thành Công', `File Phieu_Cham_Diem_Nhom_${nhomBiCham}.pdf đã được tải xuống máy của bạn.`, true);
+            }).catch(err => {
+                showModal('❌', 'Lỗi Xuất File', 'Có lỗi xảy ra khi tạo PDF. Vui lòng thử lại.', true);
+            });
+        }
+
+        // --- 4. TÍNH NĂNG GỬI GOOGLE SHEETS QUA APP SCRIPT ---
+        // !!! LƯU Ý CHO GIẢNG VIÊN: Thay chuỗi 'URL_APP_SCRIPT_CUA_THAY_CO_O_DAY' bằng Web App URL thật
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFBE7O6MCToX81OkJbu8xxYLeprJ6c0VAcNDIT1ekKCXyvVXh2_-a1V13ipdi5UEv9Aw/exec'; 
+
+        async function submitToGoogleSheet() {
+            const lop = document.getElementById('inp_lop').value.trim();
+            const nhomCham = document.getElementById('inp_nhom_cham').value;
+            const nhomBiCham = document.getElementById('inp_nhom_bi_cham').value;
+            
+            if(!lop || !nhomCham || !nhomBiCham) {
+                showModal('⚠️', 'Thiếu Thông Tin', 'Vui lòng điền đủ Mã Lớp, Nhóm Đánh Giá và Nhóm Bị Đánh Giá!', true);
+                return;
+            }
+
+            const keepTxt = document.getElementById('inp_keep').value.trim();
+            const changeTxt = document.getElementById('inp_change').value.trim();
+
+            // Đóng gói dữ liệu chuẩn action: "save_danh_gia_cheo"
+            const payload = {
+                action: "save_danh_gia_cheo",
+                SheetName: "Danhgia7-10", 
+                Lop: lop,
+                Nhom: "Nhóm " + nhomBiCham, 
+                Nguoi_Danh_Gia: "Đại diện Nhóm " + nhomCham,
+                Nguoi_Duoc_Danh_Gia: "Nhóm " + nhomBiCham,
+                Tham_Du_20: document.getElementById('score_1').value + " / 4.0", 
+                Quan_Ly_20: document.getElementById('score_2').value + " / 3.0", 
+                Giao_Tiep_20: document.getElementById('score_3').value + " / 2.0", 
+                Giai_Quyet_VD_15: document.getElementById('score_4').value + " / 1.0", 
+                Noi_Dung_25: "", // Bỏ trống
+                Tong_Diem_Phan_Tram: document.getElementById('total_score_display').innerText + " / 10",
+                Nhan_Xet: "KEEP: " + (keepTxt||"Không có") + " | CHANGE: " + (changeTxt||"Không có")
+            };
+
+            showModal('🚀', 'Đang gửi dữ liệu...', 'Hệ thống đang kết nối với máy chủ Google Sheets.', false);
+
+            try {
+                if(GOOGLE_SCRIPT_URL === 'URL_APP_SCRIPT_CUA_THAY_CO_O_DAY') {
+                    setTimeout(() => {
+                        console.log("Dữ liệu Payload sẽ gửi đi:", payload);
+                        showModal('✅', 'Gửi Thành Công (Demo)', 'Dữ liệu đã được đóng gói chuẩn bị gửi. Giảng viên cần thay URL thật trong mã nguồn để gửi đi.', true);
+                    }, 1000);
+                    return;
+                }
+
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                
+                if(result.result === "success") {
+                    showModal('✅', 'Thành Công!', 'Điểm số đã được lưu an toàn vào hệ thống của Giảng viên.', true);
+                } else {
+                    showModal('❌', 'Lỗi Server', 'Không thể lưu. Lỗi: ' + (result.message || result.error), true);
+                }
+
+            } catch (error) {
+                showModal('❌', 'Lỗi Mạng', 'Không thể kết nối. Vui lòng kiểm tra Internet và thử lại.', true);
+                console.error(error);
+            }
+        }
+
+        // --- HÀM UI MODAL ---
+        const modal = document.getElementById('statusModal');
+        const mIcon = document.getElementById('modalIcon');
+        const mTitle = document.getElementById('modalTitle');
+        const mDesc = document.getElementById('modalDesc');
+        const mBtn = document.getElementById('modalBtn');
+
+        function showModal(icon, title, desc, showBtn) {
+            mIcon.innerText = icon;
+            mTitle.innerText = title;
+            mDesc.innerText = desc;
+            mBtn.style.display = showBtn ? 'block' : 'none';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            modal.querySelector('div').classList.replace('scale-95', 'scale-100');
+        }
+
+        function closeModal() {
+            modal.querySelector('div').classList.replace('scale-100', 'scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 200);
+        }
+    </script>
+</body>
+</html>
