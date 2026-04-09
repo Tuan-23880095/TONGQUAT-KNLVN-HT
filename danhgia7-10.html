@@ -6,8 +6,6 @@
     <title>Hệ thống Đánh giá Chéo Tuần 7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Thư viện xuất PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -32,14 +30,37 @@
         .nav-link.active { background-color: #F5F5F4; color: #C17A3D; font-weight: 600; border-left: 4px solid #C17A3D; }
         /* Tối ưu tap target cho mobile */
         select, input, textarea, button { font-size: 16px !important; } 
+
+        /* --- CẤU HÌNH GIAO DIỆN KHI IN/XUẤT PDF --- */
+        @media print {
+            /* 1. Ẩn tất cả mọi thứ trên trang */
+            body * {
+                visibility: hidden;
+            }
+            
+            /* 2. Chỉ hiển thị vùng có id="export-pdf-area" và các phần tử con của nó */
+            #export-pdf-area, #export-pdf-area * {
+                visibility: visible;
+            }
+            
+            /* 3. Đưa vùng cần in lên góc trên cùng bên trái, bỏ qua các lề của giao diện web */
+            #export-pdf-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none !important; /* Bỏ viền bóng để file PDF sạch đẹp */
+                border: none !important;
+            }
+        
+            /* 4. Ẩn luôn các nút bấm "Xuất lưu PDF" và "Gửi điểm" nằm dưới vùng in */
+            button {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="font-sans antialiased flex flex-col md:flex-row min-h-screen">
-
-<!-- Chosen Palette: Warm Neutrals with Terracotta (Accent) and Muted Teal secondary accents. -->
-<!-- Application Structure Plan: The SPA integrates the full instructional documentation (Overview, Script, Roles, Criteria, Standard Form) alongside a highly functional Live Grading tool. A sticky sidebar (bottom nav on mobile) ensures quick navigation. The layout uses Tailwind grids and flexbox to manage the dense information elegantly without overwhelming the user, optimizing tap targets for mobile use during live evaluations. -->
-<!-- Visualization & Content Choices: Doughnut Chart for Time Allocation; Polar Area Chart for Criteria Weights; Interactive HTML Checklists and Tabs for Role Duties; Responsive Table for Rubric; Interactive form with automated calculations, PDF generation via html2pdf, and Apps Script fetch API integration for the Live Grading section. -->
-<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <!-- SIDEBAR DESKTOP -->
     <nav class="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-warm-200 sticky top-0 md:h-screen z-40 overflow-y-auto hidden md:flex flex-col shadow-sm">
@@ -624,37 +645,11 @@
                 if (link.getAttribute('href').substring(1) === current) link.classList.add('active');
             });
         });
+
         // --- 3. TÍNH NĂNG XUẤT PDF (SỬ DỤNG TRÌNH DUYỆT MẶC ĐỊNH) ---
         function exportToPDF() {
             window.print();
         } 
-        /* --- CẤU HÌNH GIAO DIỆN KHI IN/XUẤT PDF --- */
-            @media print {
-                /* 1. Ẩn tất cả mọi thứ trên trang */
-                body * {
-                    visibility: hidden;
-                }
-                
-                /* 2. Chỉ hiển thị vùng có id="export-pdf-area" và các phần tử con của nó */
-                #export-pdf-area, #export-pdf-area * {
-                    visibility: visible;
-                }
-                
-                /* 3. Đưa vùng cần in lên góc trên cùng bên trái, bỏ qua các lề của giao diện web */
-                #export-pdf-area {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    width: 100%;
-                    box-shadow: none !important; /* Bỏ viền bóng để file PDF sạch đẹp */
-                    border: none !important;
-                }
-            
-                /* 4. Ẩn luôn các nút bấm "Xuất lưu PDF" và "Gửi điểm" nằm dưới vùng in */
-                button {
-                    display: none !important;
-                }
-            }
 
         // --- 4. TÍNH NĂNG GỬI GOOGLE SHEETS QUA APP SCRIPT ---
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFBE7O6MCToX81OkJbu8xxYLeprJ6c0VAcNDIT1ekKCXyvVXh2_-a1V13ipdi5UEv9Aw/exec'; 
